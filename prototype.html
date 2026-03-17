@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice-Based Work Reporting System — Prototype</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #030712; color: #f9fafb; min-height: 100vh; }
+
+    /* NAV */
+    .nav { background: #111827; border-bottom: 1px solid #1f2937; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .nav-title { font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+    .nav-icon { width: 30px; height: 30px; background: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .nav-icon svg { width: 16px; height: 16px; }
+    .nav-meta { font-size: 11px; color: #4b5563; margin-top: 1px; }
+    .nav-switch { display: flex; gap: 4px; background: #1f2937; border-radius: 8px; padding: 3px; }
+    .nav-btn { font-size: 12px; padding: 6px 14px; border: none; border-radius: 6px; cursor: pointer; background: transparent; color: #9ca3af; font-family: inherit; transition: background 0.15s, color 0.15s; }
+    .nav-btn.active { background: #374151; color: #f9fafb; }
+
+    /* SCREENS */
+    .screen { display: none; max-width: 520px; margin: 0 auto; padding: 28px 20px; }
+    .screen.active { display: block; }
+
+    /* TYPOGRAPHY */
+    .pg-title { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
+    .pg-sub { font-size: 14px; color: #6b7280; margin-bottom: 28px; line-height: 1.6; }
+
+    /* FORM */
+    .field-label { font-size: 12px; color: #9ca3af; display: block; margin-bottom: 6px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .field-input { width: 100%; background: #111827; border: 1px solid #374151; border-radius: 10px; padding: 11px 14px; color: #f9fafb; font-size: 14px; font-family: inherit; outline: none; margin-bottom: 24px; transition: border-color 0.15s; }
+    .field-input:focus { border-color: #4f46e5; }
+    .field-input::placeholder { color: #4b5563; }
+
+    /* MIC */
+    .mic-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+    .mic-btn { width: 80px; height: 80px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.1s, box-shadow 0.2s; background: #1f2937; outline: none; }
+    .mic-btn:hover { transform: scale(1.06); }
+    .mic-btn:active { transform: scale(0.97); }
+    .mic-btn.recording { background: #dc2626; animation: pulse 1.4s ease-in-out infinite; }
+    .mic-btn svg { width: 30px; height: 30px; transition: stroke 0.2s; }
+    @keyframes pulse { 0%,100%{ box-shadow: 0 0 0 0 rgba(220,38,38,0.4); } 60%{ box-shadow: 0 0 0 14px rgba(220,38,38,0); } }
+    .mic-label { font-size: 13px; color: #6b7280; margin-top: 12px; }
+    .mic-timer { font-size: 14px; color: #f87171; margin-top: 4px; font-variant-numeric: tabular-nums; min-height: 22px; font-weight: 500; }
+
+    /* RECORDED PREVIEW */
+    .recorded-preview { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .rec-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; flex-shrink: 0; }
+    .rec-info { flex: 1; }
+    .rec-name { font-size: 13px; color: #d1d5db; }
+    .rec-size { font-size: 11px; color: #4b5563; margin-top: 2px; }
+    .rec-clear { background: none; border: none; color: #4b5563; cursor: pointer; font-size: 20px; line-height: 1; padding: 0 2px; transition: color 0.15s; }
+    .rec-clear:hover { color: #9ca3af; }
+
+    /* DIVIDER */
+    .divider { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .divider-line { flex: 1; height: 1px; background: #1f2937; }
+    .divider-text { font-size: 12px; color: #4b5563; }
+
+    /* UPLOAD */
+    .upload-zone { border: 1.5px dashed #374151; border-radius: 14px; padding: 22px 20px; text-align: center; cursor: pointer; margin-bottom: 20px; transition: border-color 0.15s, background 0.15s; }
+    .upload-zone:hover { border-color: #4f46e5; background: #1e1b4b10; }
+    .upload-zone.has-file { border-color: #4f46e5; background: #1e1b4b15; }
+    .upload-text { font-size: 14px; color: #6b7280; }
+    .upload-filename { font-size: 14px; color: #818cf8; font-weight: 500; }
+    .upload-hint { font-size: 12px; color: #4b5563; margin-top: 4px; }
+
+    /* BUTTONS */
+    .btn-primary { width: 100%; background: #4f46e5; color: white; border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.15s, transform 0.1s; }
+    .btn-primary:hover:not(:disabled) { background: #4338ca; }
+    .btn-primary:active:not(:disabled) { transform: scale(0.99); }
+    .btn-primary:disabled { background: #1f2937; color: #4b5563; cursor: not-allowed; }
+    .btn-ghost { background: transparent; border: 1px solid #374151; color: #9ca3af; border-radius: 8px; padding: 7px 16px; font-size: 13px; cursor: pointer; font-family: inherit; transition: background 0.15s, color 0.15s; }
+    .btn-ghost:hover { background: #1f2937; color: #f9fafb; }
+
+    /* LOADING */
+    .loading-bar { height: 3px; background: #1f2937; border-radius: 2px; margin: 16px 0 0; overflow: hidden; display: none; }
+    .loading-fill { height: 100%; background: #4f46e5; border-radius: 2px; width: 0%; transition: width 0.25s ease; }
+
+    /* REPORT PAGE */
+    .rp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .rp-title { font-size: 22px; font-weight: 600; }
+    .rp-summary { font-size: 13px; color: #6b7280; margin-bottom: 24px; line-height: 1.7; background: #111827; border-radius: 10px; padding: 12px 14px; border: 1px solid #1f2937; }
+    .section { border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; }
+    .section.green { border: 1px solid #14532d; background: #05160b25; }
+    .section.blue  { border: 1px solid #1e3a5f; background: #0c1a2e25; }
+    .section.red   { border: 1px solid #7f1d1d; background: #2d0a0a25; }
+    .section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 12px; text-transform: uppercase; }
+    .section.green .section-title { color: #4ade80; }
+    .section.blue  .section-title { color: #60a5fa; }
+    .section.red   .section-title { color: #f87171; }
+    .section-item { display: flex; gap: 10px; font-size: 13px; color: #d1d5db; margin-bottom: 8px; line-height: 1.6; }
+    .section-item:last-child { margin-bottom: 0; }
+    .arrow { color: #4b5563; flex-shrink: 0; margin-top: 2px; }
+    .section-empty { font-size: 13px; color: #4b5563; font-style: italic; }
+    .transcript-toggle { font-size: 12px; color: #6b7280; cursor: pointer; margin-top: 16px; display: inline-block; background: none; border: none; font-family: inherit; padding: 0; transition: color 0.15s; }
+    .transcript-toggle:hover { color: #9ca3af; }
+    .transcript-box { background: #111827; border-radius: 10px; padding: 14px; margin-top: 10px; font-size: 13px; color: #9ca3af; line-height: 1.8; display: none; border: 1px solid #1f2937; }
+    .hint { font-size: 12px; color: #374151; margin-top: 20px; padding-top: 14px; border-top: 1px solid #1f2937; }
+
+    /* MANAGER LIST */
+    .ml-header { margin-bottom: 20px; }
+    .ml-title { font-size: 22px; font-weight: 600; }
+    .ml-sub { font-size: 13px; color: #6b7280; margin-top: 4px; }
+    .report-card { background: #111827; border: 1px solid #1f2937; border-radius: 14px; padding: 16px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+    .report-card:hover { border-color: #374151; background: #111827ee; }
+    .rc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .rc-left { display: flex; align-items: center; gap: 12px; }
+    .avatar { border-radius: 50%; background: #1e1b4b; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #818cf8; flex-shrink: 0; }
+    .rc-name { font-size: 14px; font-weight: 500; }
+    .rc-time { font-size: 11px; color: #4b5563; margin-top: 2px; }
+    .tag { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 6px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .tag.new     { background: #05160b50; color: #4ade80; border: 1px solid #14532d; }
+    .tag.blocked { background: #2d0a0a50; color: #f87171; border: 1px solid #7f1d1d; }
+    .rc-preview { font-size: 12px; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 10px; }
+    .rc-pills { display: flex; gap: 12px; }
+    .pill { font-size: 11px; color: #6b7280; display: flex; align-items: center; gap: 5px; }
+    .pill-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .pill-dot.g { background: #4ade80; }
+    .pill-dot.b { background: #60a5fa; }
+    .pill-dot.r { background: #f87171; }
+
+    /* MANAGER DETAIL */
+    .md-back { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6b7280; cursor: pointer; margin-bottom: 22px; background: none; border: none; font-family: inherit; padding: 0; transition: color 0.15s; }
+    .md-back:hover { color: #d1d5db; }
+    .md-top { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
+    .md-name { font-size: 20px; font-weight: 600; }
+    .md-time { font-size: 12px; color: #6b7280; margin-top: 3px; }
+    .md-summary { font-size: 13px; color: #6b7280; margin: 14px 0 22px; background: #111827; border-radius: 10px; padding: 14px; line-height: 1.7; border: 1px solid #1f2937; }
+  </style>
+</head>
+<body>
+
+  <div class="nav">
+    <div class="nav-title">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="2" width="6" height="11" rx="3"/>
+          <path d="M5 10a7 7 0 0 0 14 0M12 19v3M8 22h8"/>
+        </svg>
+      </div>
+      <div>
+        <div>Voice Reports</div>
+        <div class="nav-meta">Experience Prototype · Not a final product</div>
+      </div>
+    </div>
+    <div class="nav-switch">
+      <button class="nav-btn active" onclick="switchRole('worker')">Worker</button>
+      <button class="nav-btn" onclick="switchRole('manager')">Manager</button>
+    </div>
+  </div>
+
+  <!-- WORKER: Record -->
+  <div class="screen active" id="screen-record">
+    <div class="pg-title">Voice Work Report</div>
+    <div class="pg-sub">Record or upload your update — AI will generate a structured report instantly.</div>
+
+    <label class="field-label">Your name</label>
+    <input class="field-input" type="text" id="worker-name" placeholder="e.g. Marco" />
+
+    <div class="mic-section">
+      <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">
+        <svg id="mic-icon" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="2" width="6" height="11" rx="3"/>
+          <path d="M5 10a7 7 0 0 0 14 0M12 19v3M8 22h8"/>
+        </svg>
+      </button>
+      <div class="mic-label" id="mic-label">Tap to record</div>
+      <div class="mic-timer" id="mic-timer"></div>
+    </div>
+
+    <div id="recorded-preview" style="display:none;">
+      <div class="recorded-preview">
+        <div class="rec-dot"></div>
+        <div class="rec-info">
+          <div class="rec-name" id="rec-name">Recording ready</div>
+          <div class="rec-size" id="rec-size"></div>
+        </div>
+        <button class="rec-clear" onclick="clearRecording()" title="Remove">&#10005;</button>
+      </div>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-text">or upload a file</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+      <input type="file" id="file-input" accept="audio/*" style="display:none" onchange="handleFile(this)">
+      <div class="upload-text" id="upload-text">Click to select an audio file</div>
+      <div class="upload-hint">mp3, wav, m4a, webm supported</div>
+    </div>
+
+    <button class="btn-primary" id="gen-btn" disabled onclick="generateReport()">Generate Report</button>
+    <div class="loading-bar" id="loading-bar">
+      <div class="loading-fill" id="loading-fill"></div>
+    </div>
+  </div>
+
+  <!-- WORKER: Report -->
+  <div class="screen" id="screen-report">
+    <div class="rp-header">
+      <div class="rp-title">Work Status Report</div>
+      <button class="btn-ghost" onclick="newReport()">← New report</button>
+    </div>
+    <div class="rp-summary" id="rp-summary"></div>
+    <div class="section green"><div class="section-title">Tasks Completed</div><div id="rp-completed"></div></div>
+    <div class="section blue"><div class="section-title">In Progress</div><div id="rp-progress"></div></div>
+    <div class="section red"><div class="section-title">Blockers</div><div id="rp-blockers"></div></div>
+    <button class="transcript-toggle" onclick="toggleTranscript()">View raw transcript</button>
+    <div class="transcript-box" id="transcript-box"></div>
+    <div class="hint">&#10003; Report submitted. Switch to Manager view to see it appear in the list.</div>
+  </div>
+
+  <!-- MANAGER: List -->
+  <div class="screen" id="screen-manager-list">
+    <div class="ml-header">
+      <div class="ml-title">Team Reports</div>
+      <div class="ml-sub">Submitted today · Click a report to view details</div>
+    </div>
+    <div id="report-list"></div>
+  </div>
+
+  <!-- MANAGER: Detail -->
+  <div class="screen" id="screen-manager-detail">
+    <button class="md-back" onclick="backToList()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to reports
+    </button>
+    <div id="md-content"></div>
+  </div>
+
+  <script>
+    const mockReports = [
+      { id:1, workerName:'Marco', time:'Today, 9:42 AM', status:'blocked', summary:'Completed HVAC inspection on floors 3–5. Unable to upload full report on site due to no Wi-Fi signal inside building C.', tasksCompleted:['Inspected HVAC units on floors 3–5','Filed equipment checklist'], tasksInProgress:['Waiting on replacement parts for unit 3B'], blockers:['No Wi-Fi in building C — could not upload report on site'], transcript:'Today I finished inspecting all the HVAC units on floors three through five and filed the checklist. I am still waiting on the replacement parts for unit 3B. I could not upload my full report while on site because there was no Wi-Fi signal inside building C.' },
+      { id:2, workerName:'Rey', time:'Today, 10:15 AM', status:'new', summary:'Morning walkthrough and supply restocking complete. Deep clean of break room scheduled for 2 PM, no blockers.', tasksCompleted:['Restocked supply closets on all floors','Completed morning walkthrough'], tasksInProgress:['Deep clean of break room at 2 PM'], blockers:[], transcript:'I finished restocking the supply closets on all floors and did the morning walkthrough. This afternoon I have the deep clean of the break room at 2pm, no issues to report.' },
+      { id:3, workerName:'Mevel', time:'Today, 8:58 AM', status:'new', summary:'Patient rounds and medication log completed. Waiting on lab results for Room 4 before proceeding.', tasksCompleted:['Completed patient room rounds','Updated medication log'], tasksInProgress:['Waiting on lab results for Room 4'], blockers:[], transcript:'I completed all the patient room rounds this morning and updated the medication log. I am still waiting on the lab results for the patient in Room 4 before I can proceed with the next steps.' },
+    ];
+
+    let allReports = [...mockReports];
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let recordedFile = null;
+    let uploadedFile = null;
+    let timerInterval = null;
+    let seconds = 0;
+    let isRecording = false;
+    let showTranscript = false;
+
+    function ini(n){ return n.slice(0,2).toUpperCase(); }
+    function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById('screen-'+id).classList.add('active'); }
+    function switchRole(r){ document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',['worker','manager'][i]===r)); if(r==='worker'){ showScreen('record'); }else{ renderList(); showScreen('manager-list'); } }
+
+    async function toggleRecording(){
+      if(!isRecording){
+        try{
+          const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+          mediaRecorder.ondataavailable = e=>{ if(e.data.size>0) audioChunks.push(e.data); };
+          mediaRecorder.onstop = ()=>{
+            const blob = new Blob(audioChunks,{type:'audio/webm'});
+            recordedFile = new File([blob],'recording.webm',{type:'audio/webm'});
+            stream.getTracks().forEach(t=>t.stop());
+            document.getElementById('rec-name').textContent = 'Recording ready ('+seconds+'s)';
+            document.getElementById('rec-size').textContent = (recordedFile.size/1024).toFixed(1)+' KB';
+            document.getElementById('recorded-preview').style.display = 'block';
+            clearUpload();
+            updateGenBtn();
+          };
+          mediaRecorder.start();
+          isRecording = true; seconds = 0;
+          document.getElementById('mic-btn').classList.add('recording');
+          document.getElementById('mic-icon').setAttribute('stroke','white');
+          document.getElementById('mic-label').textContent = 'Tap to stop';
+          timerInterval = setInterval(()=>{ seconds++; const m=Math.floor(seconds/60),s=seconds%60; document.getElementById('mic-timer').textContent=m+':'+(s<10?'0':'')+s; },1000);
+        }catch(e){
+          document.getElementById('mic-label').textContent = 'Microphone access denied';
+        }
+      } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        clearInterval(timerInterval);
+        document.getElementById('mic-btn').classList.remove('recording');
+        document.getElementById('mic-icon').setAttribute('stroke','#9ca3af');
+        document.getElementById('mic-label').textContent = 'Tap to record';
+        document.getElementById('mic-timer').textContent = '';
+      }
+    }
+
+    function clearRecording(){ recordedFile=null; document.getElementById('recorded-preview').style.display='none'; updateGenBtn(); }
+    function clearUpload(){ uploadedFile=null; document.getElementById('upload-zone').classList.remove('has-file'); document.getElementById('upload-text').textContent='Click to select an audio file'; }
+
+    function handleFile(input){
+      const file=input.files[0]; if(!file) return;
+      uploadedFile=file; clearRecording();
+      document.getElementById('upload-zone').classList.add('has-file');
+      document.getElementById('upload-text').innerHTML='<span class="upload-filename">'+file.name+'</span>';
+      updateGenBtn();
+    }
+
+    function updateGenBtn(){ document.getElementById('gen-btn').disabled=!(recordedFile||uploadedFile); }
+
+    function generateReport(){
+      const name = document.getElementById('worker-name').value.trim()||'Worker';
+      document.getElementById('gen-btn').disabled=true;
+      document.getElementById('gen-btn').textContent='Generating report...';
+      const bar=document.getElementById('loading-bar'), fill=document.getElementById('loading-fill');
+      bar.style.display='block'; let w=0;
+      const iv=setInterval(()=>{ w=Math.min(w+7,90); fill.style.width=w+'%'; },120);
+      setTimeout(()=>{
+        clearInterval(iv); fill.style.width='100%';
+        setTimeout(()=>{
+          const demo={ id:allReports.length+1, workerName:name, time:'Today, '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}), status:'new', summary:'Homepage redesign pushed to staging. Mobile navigation still in progress due to a dropdown z-index issue on iOS. Waiting on client feedback before the hero section can be finalized.', tasksCompleted:['Finished homepage redesign and pushed it to staging'], tasksInProgress:['Working on mobile navigation — dropdown z-index issue on iOS'], blockers:[], transcript:'Today I finished the homepage redesign and pushed it to staging. I am still working on the mobile navigation, running into some issues with the dropdown z-index on iOS. I am also waiting on client feedback before I can move forward with the hero section content.' };
+          allReports.unshift(demo);
+          bar.style.display='none'; fill.style.width='0%';
+          document.getElementById('gen-btn').textContent='Generate Report';
+          renderReport(demo);
+        },300);
+      },1800);
+    }
+
+    function renderItems(items, emptyText){
+      return items.length ? items.map(t=>`<div class="section-item"><span class="arrow">→</span><span>${t}</span></div>`).join('') : `<div class="section-empty">${emptyText}</div>`;
+    }
+
+    function renderReport(r){
+      document.getElementById('rp-summary').textContent=r.summary;
+      document.getElementById('rp-completed').innerHTML=renderItems(r.tasksCompleted,'No completed tasks mentioned.');
+      document.getElementById('rp-progress').innerHTML=renderItems(r.tasksInProgress,'No in-progress tasks mentioned.');
+      document.getElementById('rp-blockers').innerHTML=renderItems(r.blockers,'No blockers mentioned.');
+      document.getElementById('transcript-box').textContent=r.transcript;
+      showTranscript=false; document.getElementById('transcript-box').style.display='none';
+      showScreen('report');
+    }
+
+    function toggleTranscript(){
+      showTranscript=!showTranscript;
+      document.getElementById('transcript-box').style.display=showTranscript?'block':'none';
+      document.querySelector('.transcript-toggle').textContent=showTranscript?'Hide raw transcript':'View raw transcript';
+    }
+
+    function newReport(){
+      recordedFile=null; uploadedFile=null;
+      document.getElementById('recorded-preview').style.display='none';
+      clearUpload();
+      document.getElementById('worker-name').value='';
+      document.getElementById('gen-btn').disabled=true;
+      document.getElementById('gen-btn').textContent='Generate Report';
+      showScreen('record');
+    }
+
+    function renderList(){
+      document.getElementById('report-list').innerHTML = allReports.map(r=>`
+        <div class="report-card" onclick="showDetail(${r.id})">
+          <div class="rc-top">
+            <div class="rc-left">
+              <div class="avatar" style="width:36px;height:36px;font-size:12px;">${ini(r.workerName)}</div>
+              <div><div class="rc-name">${r.workerName}</div><div class="rc-time">${r.time}</div></div>
+            </div>
+            <span class="tag ${r.blockers.length?'blocked':'new'}">${r.blockers.length?'Blocked':'New'}</span>
+          </div>
+          <div class="rc-preview">${r.tasksCompleted[0]||'No tasks listed'}</div>
+          <div class="rc-pills">
+            <span class="pill"><span class="pill-dot g"></span>${r.tasksCompleted.length} done</span>
+            <span class="pill"><span class="pill-dot b"></span>${r.tasksInProgress.length} in progress</span>
+            ${r.blockers.length?`<span class="pill"><span class="pill-dot r"></span>${r.blockers.length} blocker</span>`:''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showDetail(id){
+      const r=allReports.find(x=>x.id===id);
+      document.getElementById('md-content').innerHTML=`
+        <div class="md-top">
+          <div class="avatar" style="width:44px;height:44px;font-size:15px;">${ini(r.workerName)}</div>
+          <div><div class="md-name">${r.workerName}</div><div class="md-time">${r.time}</div></div>
+          <span class="tag ${r.blockers.length?'blocked':'new'}" style="margin-left:auto;">${r.blockers.length?'Blocked':'New'}</span>
+        </div>
+        <div class="md-summary">${r.summary}</div>
+        <div class="section green"><div class="section-title">Tasks Completed</div>${renderItems(r.tasksCompleted,'None listed.')}</div>
+        <div class="section blue"><div class="section-title">In Progress</div>${renderItems(r.tasksInProgress,'None mentioned.')}</div>
+        <div class="section red"><div class="section-title">Blockers</div>${renderItems(r.blockers,'No blockers mentioned.')}</div>
+        <div class="hint">In the real app, this report is auto-generated from ${r.workerName}'s voice recording via OpenAI Whisper + GPT-4o.</div>
+      `;
+      showScreen('manager-detail');
+    }
+
+    function backToList(){ renderList(); showScreen('manager-list'); }
+  </script>
+</body>
+</html>
