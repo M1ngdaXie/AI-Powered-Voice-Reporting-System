@@ -14,9 +14,12 @@
     .nav-icon { width: 30px; height: 30px; background: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .nav-icon svg { width: 16px; height: 16px; }
     .nav-meta { font-size: 11px; color: #4b5563; margin-top: 1px; }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
     .nav-switch { display: flex; gap: 4px; background: #1f2937; border-radius: 8px; padding: 3px; }
     .nav-btn { font-size: 12px; padding: 6px 14px; border: none; border-radius: 6px; cursor: pointer; background: transparent; color: #9ca3af; font-family: inherit; transition: background 0.15s, color 0.15s; }
     .nav-btn.active { background: #374151; color: #f9fafb; }
+    .nav-icon-btn { background: none; border: 1px solid #374151; color: #9ca3af; border-radius: 8px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: background 0.15s, color 0.15s; font-family: inherit; }
+    .nav-icon-btn:hover { background: #1f2937; color: #f9fafb; }
 
     /* SCREENS */
     .screen { display: none; max-width: 520px; margin: 0 auto; padding: 28px 20px; }
@@ -24,24 +27,48 @@
 
     /* TYPOGRAPHY */
     .pg-title { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
-    .pg-sub { font-size: 14px; color: #6b7280; margin-bottom: 28px; line-height: 1.6; }
+    .pg-sub { font-size: 14px; color: #9ca3af; margin-bottom: 28px; line-height: 1.6; }
 
     /* FORM */
     .field-label { font-size: 12px; color: #9ca3af; display: block; margin-bottom: 6px; letter-spacing: 0.05em; text-transform: uppercase; }
-    .field-input { width: 100%; background: #111827; border: 1px solid #374151; border-radius: 10px; padding: 11px 14px; color: #f9fafb; font-size: 14px; font-family: inherit; outline: none; margin-bottom: 24px; transition: border-color 0.15s; }
+    .field-input { width: 100%; background: #111827; border: 1px solid #374151; border-radius: 10px; padding: 11px 14px; color: #f9fafb; font-size: 14px; font-family: inherit; outline: none; margin-bottom: 4px; transition: border-color 0.15s; }
     .field-input:focus { border-color: #4f46e5; }
     .field-input::placeholder { color: #4b5563; }
+    .field-input.error { border-color: #ef4444; margin-bottom: 0; }
+    .field-error { color: #f87171; font-size: 12px; margin-top: 4px; margin-bottom: 16px; display: none; }
+    .field-spacer { margin-bottom: 20px; }
 
     /* MIC */
-    .mic-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+    .mic-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; position: relative; }
     .mic-btn { width: 80px; height: 80px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.1s, box-shadow 0.2s; background: #1f2937; outline: none; }
     .mic-btn:hover { transform: scale(1.06); }
     .mic-btn:active { transform: scale(0.97); }
     .mic-btn.recording { background: #dc2626; animation: pulse 1.4s ease-in-out infinite; }
     .mic-btn svg { width: 30px; height: 30px; transition: stroke 0.2s; }
     @keyframes pulse { 0%,100%{ box-shadow: 0 0 0 0 rgba(220,38,38,0.4); } 60%{ box-shadow: 0 0 0 14px rgba(220,38,38,0); } }
-    .mic-label { font-size: 13px; color: #6b7280; margin-top: 12px; }
+    .mic-label { font-size: 13px; color: #9ca3af; margin-top: 12px; }
     .mic-timer { font-size: 14px; color: #f87171; margin-top: 4px; font-variant-numeric: tabular-nums; min-height: 22px; font-weight: 500; }
+
+    /* WAVEFORM */
+    #waveform-canvas { display: none; margin-top: 12px; border-radius: 8px; }
+
+    /* ONBOARDING TOOLTIP */
+    .onboard-tip { background: #1e1b4b; border: 1px solid #4f46e5; border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #a5b4fc; margin-top: 10px; display: flex; align-items: center; gap: 10px; max-width: 320px; text-align: center; }
+    .onboard-tip-close { background: none; border: none; color: #6366f1; cursor: pointer; font-size: 16px; line-height: 1; padding: 0; margin-left: auto; flex-shrink: 0; }
+
+    /* TOAST / ERROR BANNERS */
+    .error-toast { background: #2d0a0a; border: 1px solid #7f1d1d; color: #f87171; border-radius: 10px; padding: 10px 14px; font-size: 13px; margin-bottom: 12px; display: none; }
+    .warn-toast { background: #1c1407; border: 1px solid #78350f; color: #fbbf24; border-radius: 10px; padding: 10px 14px; font-size: 13px; margin-bottom: 12px; display: none; }
+
+    /* OVERWRITE CONFIRM */
+    #overwrite-confirm { background: #111827; border: 1px solid #374151; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; display: none; }
+    .overwrite-text { font-size: 13px; color: #d1d5db; margin-bottom: 12px; }
+    .overwrite-actions { display: flex; gap: 8px; }
+    .btn-sm { padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+    .btn-sm-ghost { background: transparent; border: 1px solid #374151; color: #9ca3af; }
+    .btn-sm-ghost:hover { background: #1f2937; color: #f9fafb; }
+    .btn-sm-danger { background: #7f1d1d; border: none; color: #fca5a5; }
+    .btn-sm-danger:hover { background: #991b1b; }
 
     /* RECORDED PREVIEW */
     .recorded-preview { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
@@ -49,8 +76,11 @@
     .rec-info { flex: 1; }
     .rec-name { font-size: 13px; color: #d1d5db; }
     .rec-size { font-size: 11px; color: #4b5563; margin-top: 2px; }
+    .rec-actions { display: flex; gap: 6px; }
     .rec-clear { background: none; border: none; color: #4b5563; cursor: pointer; font-size: 20px; line-height: 1; padding: 0 2px; transition: color 0.15s; }
     .rec-clear:hover { color: #9ca3af; }
+    .rec-rerecord { background: none; border: 1px solid #374151; color: #9ca3af; cursor: pointer; font-size: 11px; border-radius: 6px; padding: 3px 8px; font-family: inherit; transition: background 0.15s, color 0.15s; }
+    .rec-rerecord:hover { background: #1f2937; color: #f9fafb; }
 
     /* DIVIDER */
     .divider { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
@@ -61,26 +91,36 @@
     .upload-zone { border: 1.5px dashed #374151; border-radius: 14px; padding: 22px 20px; text-align: center; cursor: pointer; margin-bottom: 20px; transition: border-color 0.15s, background 0.15s; }
     .upload-zone:hover { border-color: #4f46e5; background: #1e1b4b10; }
     .upload-zone.has-file { border-color: #4f46e5; background: #1e1b4b15; }
-    .upload-text { font-size: 14px; color: #6b7280; }
+    .upload-text { font-size: 14px; color: #9ca3af; }
     .upload-filename { font-size: 14px; color: #818cf8; font-weight: 500; }
     .upload-hint { font-size: 12px; color: #4b5563; margin-top: 4px; }
 
     /* BUTTONS */
     .btn-primary { width: 100%; background: #4f46e5; color: white; border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.15s, transform 0.1s; }
-    .btn-primary:hover:not(:disabled) { background: #4338ca; }
-    .btn-primary:active:not(:disabled) { transform: scale(0.99); }
-    .btn-primary:disabled { background: #1f2937; color: #4b5563; cursor: not-allowed; }
+    .btn-primary:hover:not(.btn-disabled) { background: #4338ca; }
+    .btn-primary:active:not(.btn-disabled) { transform: scale(0.99); }
+    .btn-primary.btn-disabled { background: #1f2937; color: #4b5563; cursor: default; }
     .btn-ghost { background: transparent; border: 1px solid #374151; color: #9ca3af; border-radius: 8px; padding: 7px 16px; font-size: 13px; cursor: pointer; font-family: inherit; transition: background 0.15s, color 0.15s; }
     .btn-ghost:hover { background: #1f2937; color: #f9fafb; }
 
-    /* LOADING */
-    .loading-bar { height: 3px; background: #1f2937; border-radius: 2px; margin: 16px 0 0; overflow: hidden; display: none; }
-    .loading-fill { height: 100%; background: #4f46e5; border-radius: 2px; width: 0%; transition: width 0.25s ease; }
+    /* DISABLED TOOLTIP */
+    .disabled-tip { font-size: 12px; color: #f59e0b; background: #1c1407; border: 1px solid #78350f; border-radius: 8px; padding: 6px 12px; text-align: center; margin-top: 8px; display: none; }
+
+    /* PROGRESS STEPS */
+    .progress-steps { display: none; margin-top: 16px; }
+    .progress-step { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #4b5563; padding: 6px 0; transition: color 0.3s; }
+    .progress-step.active { color: #d1d5db; }
+    .progress-step.done { color: #4ade80; }
+    .step-circle { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid #374151; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; transition: background 0.3s, border-color 0.3s; }
+    .progress-step.active .step-circle { border-color: #818cf8; background: #1e1b4b; }
+    .progress-step.done .step-circle { border-color: #4ade80; background: #05160b; color: #4ade80; }
+    .step-spinner { width: 10px; height: 10px; border: 1.5px solid #818cf8; border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* REPORT PAGE */
     .rp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
     .rp-title { font-size: 22px; font-weight: 600; }
-    .rp-summary { font-size: 13px; color: #6b7280; margin-bottom: 24px; line-height: 1.7; background: #111827; border-radius: 10px; padding: 12px 14px; border: 1px solid #1f2937; }
+    .rp-summary { font-size: 13px; color: #9ca3af; margin-bottom: 24px; line-height: 1.7; background: #111827; border-radius: 10px; padding: 12px 14px; border: 1px solid #1f2937; }
     .section { border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; }
     .section.green { border: 1px solid #14532d; background: #05160b25; }
     .section.blue  { border: 1px solid #1e3a5f; background: #0c1a2e25; }
@@ -93,17 +133,35 @@
     .section-item:last-child { margin-bottom: 0; }
     .arrow { color: #4b5563; flex-shrink: 0; margin-top: 2px; }
     .section-empty { font-size: 13px; color: #4b5563; font-style: italic; }
-    .transcript-toggle { font-size: 12px; color: #6b7280; cursor: pointer; margin-top: 16px; display: inline-block; background: none; border: none; font-family: inherit; padding: 0; transition: color 0.15s; }
-    .transcript-toggle:hover { color: #9ca3af; }
+    .transcript-toggle { font-size: 12px; color: #9ca3af; cursor: pointer; margin-top: 16px; display: inline-block; background: none; border: none; font-family: inherit; padding: 0; transition: color 0.15s; }
+    .transcript-toggle:hover { color: #d1d5db; }
     .transcript-box { background: #111827; border-radius: 10px; padding: 14px; margin-top: 10px; font-size: 13px; color: #9ca3af; line-height: 1.8; display: none; border: 1px solid #1f2937; }
     .hint { font-size: 12px; color: #374151; margin-top: 20px; padding-top: 14px; border-top: 1px solid #1f2937; }
+
+    /* SUCCESS BANNER */
+    .success-banner { background: #05160b; border: 1px solid #14532d; border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; }
+    .success-banner-text { font-size: 13px; font-weight: 600; color: #4ade80; }
+    .success-banner-undo { font-size: 12px; color: #86efac; background: none; border: 1px solid #14532d; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+    .success-banner-undo:hover { background: #0d3320; }
+
+    /* PREVIEW SCREEN */
+    .preview-section { border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; }
+    .preview-section.green { border: 1px solid #14532d; background: #05160b25; }
+    .preview-section.blue  { border: 1px solid #1e3a5f; background: #0c1a2e25; }
+    .preview-section.red   { border: 1px solid #7f1d1d; background: #2d0a0a25; }
+    .preview-item { display: flex; gap: 10px; font-size: 13px; color: #d1d5db; margin-bottom: 8px; line-height: 1.6; align-items: flex-start; }
+    .preview-item [contenteditable] { flex: 1; outline: none; border-bottom: 1px dashed #374151; padding-bottom: 2px; min-width: 0; }
+    .preview-item [contenteditable]:focus { border-bottom-color: #4f46e5; }
+    .preview-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 
     /* MANAGER LIST */
     .ml-header { margin-bottom: 20px; }
     .ml-title { font-size: 22px; font-weight: 600; }
-    .ml-sub { font-size: 13px; color: #6b7280; margin-top: 4px; }
-    .report-card { background: #111827; border: 1px solid #1f2937; border-radius: 14px; padding: 16px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+    .ml-sub { font-size: 13px; color: #9ca3af; margin-top: 4px; }
+    .report-card { background: #111827; border: 1px solid #1f2937; border-radius: 14px; padding: 16px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.15s, background 0.15s; overflow: hidden; }
     .report-card:hover { border-color: #374151; background: #111827ee; }
+    .report-card.status-new { border-left: 3px solid #4ade80; }
+    .report-card.status-blocked { border-left: 3px solid #f87171; }
     .rc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
     .rc-left { display: flex; align-items: center; gap: 12px; }
     .avatar { border-radius: 50%; background: #1e1b4b; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #818cf8; flex-shrink: 0; }
@@ -112,21 +170,138 @@
     .tag { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 6px; letter-spacing: 0.06em; text-transform: uppercase; }
     .tag.new     { background: #05160b50; color: #4ade80; border: 1px solid #14532d; }
     .tag.blocked { background: #2d0a0a50; color: #f87171; border: 1px solid #7f1d1d; }
-    .rc-preview { font-size: 12px; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 10px; }
+    .rc-preview { font-size: 12px; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 10px; }
     .rc-pills { display: flex; gap: 12px; }
-    .pill { font-size: 11px; color: #6b7280; display: flex; align-items: center; gap: 5px; }
+    .pill { font-size: 11px; color: #9ca3af; display: flex; align-items: center; gap: 5px; }
     .pill-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
     .pill-dot.g { background: #4ade80; }
     .pill-dot.b { background: #60a5fa; }
     .pill-dot.r { background: #f87171; }
 
     /* MANAGER DETAIL */
-    .md-back { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6b7280; cursor: pointer; margin-bottom: 22px; background: none; border: none; font-family: inherit; padding: 0; transition: color 0.15s; }
+    .md-back { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #9ca3af; cursor: pointer; margin-bottom: 22px; background: none; border: none; font-family: inherit; padding: 0; transition: color 0.15s; }
     .md-back:hover { color: #d1d5db; }
     .md-top { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
     .md-name { font-size: 20px; font-weight: 600; }
-    .md-time { font-size: 12px; color: #6b7280; margin-top: 3px; }
-    .md-summary { font-size: 13px; color: #6b7280; margin: 14px 0 22px; background: #111827; border-radius: 10px; padding: 14px; line-height: 1.7; border: 1px solid #1f2937; }
+    .md-time { font-size: 12px; color: #9ca3af; margin-top: 3px; }
+    .md-summary { font-size: 13px; color: #9ca3af; margin: 14px 0 22px; background: #111827; border-radius: 10px; padding: 14px; line-height: 1.7; border: 1px solid #1f2937; }
+    .md-task-card { background: #1a1f2e; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; }
+
+    /* DIALOGS */
+    dialog { background: #111827; border: 1px solid #374151; border-radius: 16px; padding: 24px; color: #f9fafb; max-width: 380px; width: calc(100vw - 48px); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0; }
+    dialog::backdrop { background: rgba(0,0,0,0.7); }
+    .dialog-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .dialog-body { font-size: 14px; color: #9ca3af; margin-bottom: 20px; line-height: 1.6; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; }
+    .dialog-cancel { background: transparent; border: 1px solid #374151; color: #9ca3af; border-radius: 8px; padding: 8px 16px; font-size: 14px; cursor: pointer; font-family: inherit; }
+    .dialog-cancel:hover { background: #1f2937; }
+    .dialog-confirm { background: #4f46e5; border: none; color: white; border-radius: 8px; padding: 8px 16px; font-size: 14px; cursor: pointer; font-family: inherit; }
+    .dialog-confirm:hover { background: #4338ca; }
+    .dialog-danger { background: #7f1d1d; border: none; color: #fca5a5; border-radius: 8px; padding: 8px 16px; font-size: 14px; cursor: pointer; font-family: inherit; }
+    .dialog-danger:hover { background: #991b1b; }
+
+    /* FAQ MODAL */
+    .faq-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+    .faq-item { margin-bottom: 16px; }
+    .faq-q { font-size: 13px; font-weight: 600; color: #d1d5db; margin-bottom: 4px; }
+    .faq-a { font-size: 13px; color: #9ca3af; line-height: 1.6; }
+    .faq-close { display: block; width: 100%; background: #374151; border: none; color: #f9fafb; border-radius: 8px; padding: 10px; font-size: 14px; cursor: pointer; font-family: inherit; margin-top: 8px; }
+    .faq-close:hover { background: #4b5563; }
+
+    /* LIGHT MODE */
+    body.light-mode { background: #f9fafb; color: #111827; }
+    body.light-mode .nav { background: #ffffff; border-bottom-color: #e5e7eb; }
+    body.light-mode .nav-meta { color: #9ca3af; }
+    body.light-mode .nav-switch { background: #f3f4f6; }
+    body.light-mode .nav-btn { color: #6b7280; }
+    body.light-mode .nav-btn.active { background: #e5e7eb; color: #111827; }
+    body.light-mode .nav-icon-btn { border-color: #e5e7eb; color: #6b7280; }
+    body.light-mode .nav-icon-btn:hover { background: #f3f4f6; }
+    body.light-mode .pg-sub { color: #6b7280; }
+    body.light-mode .field-label { color: #6b7280; }
+    body.light-mode .field-input { background: #ffffff; border-color: #d1d5db; color: #111827; }
+    body.light-mode .field-input:focus { border-color: #4f46e5; }
+    body.light-mode .field-input::placeholder { color: #9ca3af; }
+    body.light-mode .mic-btn { background: #e5e7eb; }
+    body.light-mode .mic-btn svg { stroke: #374151; }
+    body.light-mode .mic-btn.recording { background: #dc2626; }
+    body.light-mode .mic-btn.recording svg { stroke: white; }
+    body.light-mode .mic-label { color: #6b7280; }
+    body.light-mode .upload-zone { border-color: #d1d5db; }
+    body.light-mode .upload-zone:hover { border-color: #4f46e5; background: #ede9fe20; }
+    body.light-mode .upload-text { color: #6b7280; }
+    body.light-mode .divider-line { background: #e5e7eb; }
+    body.light-mode .divider-text { color: #9ca3af; }
+    body.light-mode .recorded-preview { background: #f3f4f6; border-color: #e5e7eb; }
+    body.light-mode .rec-name { color: #374151; }
+    body.light-mode .rp-summary { background: #f3f4f6; border-color: #e5e7eb; color: #374151; }
+    body.light-mode .section-item { color: #374151; }
+    body.light-mode .transcript-box { background: #f3f4f6; border-color: #e5e7eb; color: #374151; }
+    body.light-mode .hint { color: #9ca3af; border-top-color: #e5e7eb; }
+    body.light-mode .report-card { background: #ffffff; border-color: #e5e7eb; }
+    body.light-mode .report-card:hover { border-color: #d1d5db; background: #f9fafb; }
+    body.light-mode .rc-name { color: #111827; }
+    body.light-mode .rc-preview { color: #6b7280; }
+    body.light-mode .pill { color: #6b7280; }
+    body.light-mode .md-summary { background: #f3f4f6; border-color: #e5e7eb; color: #374151; }
+    body.light-mode .md-task-card { background: #f3f4f6; }
+    body.light-mode .section.green { background: #f0fdf4; }
+    body.light-mode .section.blue  { background: #eff6ff; }
+    body.light-mode .section.red   { background: #fef2f2; }
+    body.light-mode dialog { background: #ffffff; border-color: #e5e7eb; color: #111827; }
+    body.light-mode .dialog-body { color: #6b7280; }
+    body.light-mode .dialog-cancel { border-color: #d1d5db; color: #6b7280; }
+    body.light-mode .dialog-cancel:hover { background: #f3f4f6; }
+    body.light-mode #overwrite-confirm { background: #f3f4f6; border-color: #e5e7eb; }
+    body.light-mode .overwrite-text { color: #374151; }
+    body.light-mode .btn-ghost { border-color: #d1d5db; color: #6b7280; }
+    body.light-mode .btn-ghost:hover { background: #f3f4f6; color: #111827; }
+    body.light-mode .success-banner { background: #f0fdf4; border-color: #86efac; }
+    body.light-mode .success-banner-text { color: #15803d; }
+    body.light-mode .success-banner-undo { color: #166534; border-color: #86efac; }
+    body.light-mode .ml-sub { color: #6b7280; }
+    body.light-mode .md-back { color: #6b7280; }
+    body.light-mode .md-time { color: #6b7280; }
+    body.light-mode .transcript-toggle { color: #6b7280; }
+    body.light-mode .onboard-tip { background: #ede9fe; border-color: #a5b4fc; color: #4338ca; }
+    body.light-mode .btn-primary.btn-disabled { background: #e5e7eb; color: #9ca3af; }
+    body.light-mode .pg-title { color: #111827; }
+    body.light-mode .rp-title { color: #111827; }
+    body.light-mode .ml-title { color: #111827; }
+    body.light-mode .md-name { color: #111827; }
+    body.light-mode .rc-time { color: #6b7280; }
+    body.light-mode .rec-size { color: #6b7280; }
+    body.light-mode .section-empty { color: #6b7280; }
+    body.light-mode .arrow { color: #9ca3af; }
+    body.light-mode .section.green .section-title { color: #16a34a; }
+    body.light-mode .section.blue .section-title { color: #2563eb; }
+    body.light-mode .section.red .section-title { color: #dc2626; }
+    body.light-mode .preview-section.green { background: #f0fdf4; }
+    body.light-mode .preview-section.blue  { background: #eff6ff; }
+    body.light-mode .preview-section.red   { background: #fef2f2; }
+    body.light-mode .preview-item { color: #374151; }
+    body.light-mode .preview-item [contenteditable] { border-bottom-color: #d1d5db; color: #111827; }
+    body.light-mode .faq-title { color: #111827; }
+    body.light-mode .faq-q { color: #111827; }
+    body.light-mode .faq-a { color: #6b7280; }
+    body.light-mode .faq-close { background: #e5e7eb; color: #374151; }
+    body.light-mode .faq-close:hover { background: #d1d5db; }
+    body.light-mode .dialog-title { color: #111827; }
+    body.light-mode .error-toast { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
+    body.light-mode .warn-toast { background: #fffbeb; border-color: #fcd34d; color: #b45309; }
+    body.light-mode .disabled-tip { background: #fffbeb; border-color: #fcd34d; color: #b45309; }
+    body.light-mode .onboard-tip-close { color: #4338ca; }
+    body.light-mode .btn-sm-ghost { border-color: #d1d5db; color: #374151; }
+    body.light-mode .btn-sm-ghost:hover { background: #e5e7eb; }
+    body.light-mode .progress-step { color: #9ca3af; }
+    body.light-mode .progress-step.active { color: #374151; }
+    body.light-mode .progress-step.done { color: #16a34a; }
+    body.light-mode .step-circle { border-color: #d1d5db; }
+    body.light-mode .progress-step.active .step-circle { border-color: #818cf8; background: #ede9fe; }
+    body.light-mode .progress-step.done .step-circle { border-color: #86efac; background: #f0fdf4; color: #16a34a; }
+    body.light-mode .rec-rerecord { border-color: #d1d5db; color: #6b7280; }
+    body.light-mode .rec-rerecord:hover { background: #e5e7eb; color: #111827; }
+    body.light-mode .rec-clear { color: #9ca3af; }
   </style>
 </head>
 <body>
@@ -144,9 +319,13 @@
         <div class="nav-meta">Experience Prototype · Not a final product</div>
       </div>
     </div>
-    <div class="nav-switch">
-      <button class="nav-btn active" onclick="switchRole('worker')">Worker</button>
-      <button class="nav-btn" onclick="switchRole('manager')">Manager</button>
+    <div class="nav-right">
+      <button class="nav-icon-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
+      <button class="nav-icon-btn" onclick="openHelp()" title="Help & FAQ">?</button>
+      <div class="nav-switch">
+        <button class="nav-btn active" onclick="switchRole('worker')">Worker</button>
+        <button class="nav-btn" onclick="switchRole('manager')">Manager</button>
+      </div>
     </div>
   </div>
 
@@ -157,6 +336,8 @@
 
     <label class="field-label">Your name</label>
     <input class="field-input" type="text" id="worker-name" placeholder="e.g. Marco" />
+    <div class="field-error" id="name-error">Name is required</div>
+    <div class="field-spacer"></div>
 
     <div class="mic-section">
       <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">
@@ -167,6 +348,22 @@
       </button>
       <div class="mic-label" id="mic-label">Tap to record</div>
       <div class="mic-timer" id="mic-timer"></div>
+      <canvas id="waveform-canvas" width="260" height="48"></canvas>
+      <div class="onboard-tip" id="onboard-tip">
+        Tap the microphone and speak your work update. AI will do the rest.
+        <button class="onboard-tip-close" onclick="dismissOnboard()">✕</button>
+      </div>
+    </div>
+
+    <div class="error-toast" id="mic-error"></div>
+    <div class="warn-toast" id="file-warn"></div>
+
+    <div id="overwrite-confirm">
+      <div class="overwrite-text">You already have a recording. Start a new one and discard the current?</div>
+      <div class="overwrite-actions">
+        <button class="btn-sm btn-sm-ghost" onclick="cancelOverwrite()">Keep current</button>
+        <button class="btn-sm btn-sm-danger" onclick="confirmOverwrite()">Re-record</button>
+      </div>
     </div>
 
     <div id="recorded-preview" style="display:none;">
@@ -176,7 +373,10 @@
           <div class="rec-name" id="rec-name">Recording ready</div>
           <div class="rec-size" id="rec-size"></div>
         </div>
-        <button class="rec-clear" onclick="clearRecording()" title="Remove">&#10005;</button>
+        <div class="rec-actions">
+          <button class="rec-rerecord" onclick="reRecord()">Re-record</button>
+          <button class="rec-clear" onclick="clearRecording()" title="Remove">&#10005;</button>
+        </div>
       </div>
     </div>
 
@@ -192,25 +392,64 @@
       <div class="upload-hint">mp3, wav, m4a, webm supported</div>
     </div>
 
-    <button class="btn-primary" id="gen-btn" disabled onclick="generateReport()">Generate Report</button>
-    <div class="loading-bar" id="loading-bar">
-      <div class="loading-fill" id="loading-fill"></div>
+    <button class="btn-primary btn-disabled" id="gen-btn" onclick="handleGenBtnClick()">Generate Report</button>
+    <div class="disabled-tip" id="disabled-tip">Please record or upload audio first</div>
+
+    <div class="progress-steps" id="progress-steps">
+      <div class="progress-step" id="step-1">
+        <div class="step-circle" id="step-1-circle">1</div>
+        <span>Transcribing audio…</span>
+      </div>
+      <div class="progress-step" id="step-2">
+        <div class="step-circle" id="step-2-circle">2</div>
+        <span>Analyzing content…</span>
+      </div>
+      <div class="progress-step" id="step-3">
+        <div class="step-circle" id="step-3-circle">3</div>
+        <span>Formatting report…</span>
+      </div>
     </div>
   </div>
 
-  <!-- WORKER: Report -->
+  <!-- WORKER: Preview (editable) -->
+  <div class="screen" id="screen-preview">
+    <div class="rp-header">
+      <div class="rp-title">Review Your Report</div>
+      <button class="btn-ghost" onclick="newReport()">← New report</button>
+    </div>
+    <p style="font-size:13px;color:#9ca3af;margin-bottom:16px;line-height:1.6;">Review and edit before submitting. Tap any task to edit inline.</p>
+    <div class="rp-summary" id="prev-summary" contenteditable="true" style="outline:none;"></div>
+    <div class="preview-section green" id="prev-completed-section">
+      <div class="section-title" style="color:#4ade80;">Tasks Completed</div>
+      <div id="prev-completed"></div>
+    </div>
+    <div class="preview-section blue" id="prev-progress-section">
+      <div class="section-title" style="color:#60a5fa;">In Progress</div>
+      <div id="prev-progress"></div>
+    </div>
+    <div class="preview-section red" id="prev-blockers-section">
+      <div class="section-title" style="color:#f87171;">Blockers</div>
+      <div id="prev-blockers"></div>
+    </div>
+    <button class="btn-primary" style="margin-top:20px;" onclick="submitFromPreview()">Submit Report</button>
+  </div>
+
+  <!-- WORKER: Report (submitted) -->
   <div class="screen" id="screen-report">
     <div class="rp-header">
       <div class="rp-title">Work Status Report</div>
       <button class="btn-ghost" onclick="newReport()">← New report</button>
     </div>
     <div class="rp-summary" id="rp-summary"></div>
-    <div class="section green"><div class="section-title">Tasks Completed</div><div id="rp-completed"></div></div>
-    <div class="section blue"><div class="section-title">In Progress</div><div id="rp-progress"></div></div>
-    <div class="section red"><div class="section-title">Blockers</div><div id="rp-blockers"></div></div>
+    <div class="section green" id="rp-completed-section"><div class="section-title">Tasks Completed</div><div id="rp-completed"></div></div>
+    <div class="section blue" id="rp-progress-section"><div class="section-title">In Progress</div><div id="rp-progress"></div></div>
+    <div class="section red" id="rp-blockers-section"><div class="section-title">Blockers</div><div id="rp-blockers"></div></div>
     <button class="transcript-toggle" onclick="toggleTranscript()">View raw transcript</button>
     <div class="transcript-box" id="transcript-box"></div>
-    <div class="hint">&#10003; Report submitted. Switch to Manager view to see it appear in the list.</div>
+    <div class="success-banner" id="success-banner">
+      <span class="success-banner-text">✓ Report submitted successfully</span>
+      <button class="success-banner-undo" id="undo-btn" onclick="undoSubmit()">Undo <span id="undo-countdown">10</span>s</button>
+    </div>
   </div>
 
   <!-- MANAGER: List -->
@@ -231,6 +470,52 @@
     <div id="md-content"></div>
   </div>
 
+  <!-- SUBMIT CONFIRMATION DIALOG -->
+  <dialog id="submit-dialog">
+    <div class="dialog-title">Ready to submit?</div>
+    <div class="dialog-body">Your report will be visible to your manager.</div>
+    <div class="dialog-actions">
+      <button class="dialog-cancel" onclick="document.getElementById('submit-dialog').close()">Cancel</button>
+      <button class="dialog-confirm" onclick="confirmSubmit()">Submit</button>
+    </div>
+  </dialog>
+
+  <!-- DISCARD EDITS DIALOG -->
+  <dialog id="discard-dialog">
+    <div class="dialog-title">You have unsaved edits</div>
+    <div class="dialog-body">Discard your changes and start over?</div>
+    <div class="dialog-actions">
+      <button class="dialog-cancel" onclick="document.getElementById('discard-dialog').close()">Keep editing</button>
+      <button class="dialog-danger" onclick="confirmDiscard()">Discard</button>
+    </div>
+  </dialog>
+
+  <!-- HELP / FAQ DIALOG -->
+  <dialog id="help-dialog">
+    <div class="faq-title">Help & FAQ</div>
+    <div class="faq-item">
+      <div class="faq-q">How do I record?</div>
+      <div class="faq-a">Tap the mic button and speak your update. Tap again to stop.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What if microphone access is denied?</div>
+      <div class="faq-a">Go to your browser settings and allow mic access for this page (usually the lock icon in the address bar).</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I edit my report?</div>
+      <div class="faq-a">Yes — after generating, you'll see a preview where you can edit any field before submitting.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How long can my recording be?</div>
+      <div class="faq-a">At least 5 seconds. There's no maximum limit.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Who can see my report?</div>
+      <div class="faq-a">Your manager can see all submitted reports.</div>
+    </div>
+    <button class="faq-close" onclick="document.getElementById('help-dialog').close()">Close</button>
+  </dialog>
+
   <script>
     const mockReports = [
       { id:1, workerName:'Marco', time:'Today, 9:42 AM', status:'blocked', summary:'Completed HVAC inspection on floors 3–5. Unable to upload full report on site due to no Wi-Fi signal inside building C.', tasksCompleted:['Inspected HVAC units on floors 3–5','Filed equipment checklist'], tasksInProgress:['Waiting on replacement parts for unit 3B'], blockers:['No Wi-Fi in building C — could not upload report on site'], transcript:'Today I finished inspecting all the HVAC units on floors three through five and filed the checklist. I am still waiting on the replacement parts for unit 3B. I could not upload my full report while on site because there was no Wi-Fi signal inside building C.' },
@@ -247,91 +532,361 @@
     let seconds = 0;
     let isRecording = false;
     let showTranscript = false;
+    let currentReport = null;
+    let hasEdits = false;
+    let undoTimer = null;
+    let undoCountdown = 10;
+    let lastSubmittedId = null;
+    let audioContext = null;
+    let analyser = null;
+    let waveAnimFrame = null;
+    let lightMode = false;
+    let pendingOverwrite = false;
 
     function ini(n){ return n.slice(0,2).toUpperCase(); }
     function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById('screen-'+id).classList.add('active'); }
     function switchRole(r){ document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',['worker','manager'][i]===r)); if(r==='worker'){ showScreen('record'); }else{ renderList(); showScreen('manager-list'); } }
 
+    // --- ONBOARDING TOOLTIP ---
+    (function initOnboard(){
+      if(sessionStorage.getItem('onboard-dismissed')){
+        document.getElementById('onboard-tip').style.display='none';
+      }
+    })();
+    function dismissOnboard(){ sessionStorage.setItem('onboard-dismissed','1'); document.getElementById('onboard-tip').style.display='none'; }
+
+    // --- THEME TOGGLE ---
+    function toggleTheme(){
+      lightMode = !lightMode;
+      document.body.classList.toggle('light-mode', lightMode);
+      document.getElementById('theme-toggle').textContent = lightMode ? '🌑' : '🌙';
+    }
+
+    // --- HELP MODAL ---
+    function openHelp(){ document.getElementById('help-dialog').showModal(); }
+
+    // --- TOAST HELPERS ---
+    function showMicError(msg){ const el=document.getElementById('mic-error'); el.textContent=msg; el.style.display='block'; }
+    function hideMicError(){ document.getElementById('mic-error').style.display='none'; }
+    function showFileWarn(msg){ const el=document.getElementById('file-warn'); el.textContent=msg; el.style.display='block'; setTimeout(()=>{ el.style.display='none'; },4000); }
+
+    // --- WAVEFORM ---
+    function startWaveform(stream){
+      const canvas = document.getElementById('waveform-canvas');
+      canvas.style.display = 'block';
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = 64;
+      const source = audioContext.createMediaStreamSource(stream);
+      source.connect(analyser);
+      const bufLen = analyser.frequencyBinCount;
+      const dataArr = new Uint8Array(bufLen);
+      const ctx = canvas.getContext('2d');
+      function draw(){
+        waveAnimFrame = requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArr);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        const barW = (canvas.width / bufLen) * 1.8;
+        let x = 0;
+        for(let i=0;i<bufLen;i++){
+          const barH = (dataArr[i]/255)*canvas.height*0.85+2;
+          const alpha = 0.5 + (dataArr[i]/255)*0.5;
+          ctx.fillStyle = `rgba(99,102,241,${alpha})`;
+          ctx.beginPath();
+          ctx.roundRect(x, (canvas.height-barH)/2, barW-1, barH, 3);
+          ctx.fill();
+          x += barW + 1;
+        }
+      }
+      draw();
+    }
+    function stopWaveform(){
+      if(waveAnimFrame) cancelAnimationFrame(waveAnimFrame);
+      if(audioContext){ audioContext.close(); audioContext=null; }
+      const canvas = document.getElementById('waveform-canvas');
+      canvas.style.display='none';
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+    }
+
+    // --- RECORDING ---
     async function toggleRecording(){
       if(!isRecording){
-        try{
-          const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-          mediaRecorder = new MediaRecorder(stream);
-          audioChunks = [];
-          mediaRecorder.ondataavailable = e=>{ if(e.data.size>0) audioChunks.push(e.data); };
-          mediaRecorder.onstop = ()=>{
-            const blob = new Blob(audioChunks,{type:'audio/webm'});
-            recordedFile = new File([blob],'recording.webm',{type:'audio/webm'});
-            stream.getTracks().forEach(t=>t.stop());
-            document.getElementById('rec-name').textContent = 'Recording ready ('+seconds+'s)';
-            document.getElementById('rec-size').textContent = (recordedFile.size/1024).toFixed(1)+' KB';
-            document.getElementById('recorded-preview').style.display = 'block';
-            clearUpload();
-            updateGenBtn();
-          };
-          mediaRecorder.start();
-          isRecording = true; seconds = 0;
-          document.getElementById('mic-btn').classList.add('recording');
-          document.getElementById('mic-icon').setAttribute('stroke','white');
-          document.getElementById('mic-label').textContent = 'Tap to stop';
-          timerInterval = setInterval(()=>{ seconds++; const m=Math.floor(seconds/60),s=seconds%60; document.getElementById('mic-timer').textContent=m+':'+(s<10?'0':'')+s; },1000);
-        }catch(e){
-          document.getElementById('mic-label').textContent = 'Microphone access denied';
+        // Check if already have a recording
+        if(recordedFile){
+          document.getElementById('overwrite-confirm').style.display='block';
+          pendingOverwrite=true;
+          return;
         }
+        await startRecording();
       } else {
-        mediaRecorder.stop();
-        isRecording = false;
-        clearInterval(timerInterval);
-        document.getElementById('mic-btn').classList.remove('recording');
-        document.getElementById('mic-icon').setAttribute('stroke','#9ca3af');
-        document.getElementById('mic-label').textContent = 'Tap to record';
-        document.getElementById('mic-timer').textContent = '';
+        stopRecording();
       }
     }
+
+    async function startRecording(){
+      hideMicError();
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        mediaRecorder.ondataavailable = e=>{ if(e.data.size>0) audioChunks.push(e.data); };
+        mediaRecorder.onstop = ()=>{
+          stopWaveform();
+          stream.getTracks().forEach(t=>t.stop());
+          if(seconds < 5){
+            showMicError('Recording too short. Please record at least 5 seconds.');
+            recordedFile = null;
+            document.getElementById('recorded-preview').style.display='none';
+            updateGenBtn();
+            return;
+          }
+          const blob = new Blob(audioChunks,{type:'audio/webm'});
+          recordedFile = new File([blob],'recording.webm',{type:'audio/webm'});
+          document.getElementById('rec-name').textContent = 'Recording ready ('+seconds+'s)';
+          document.getElementById('rec-size').textContent = (recordedFile.size/1024).toFixed(1)+' KB';
+          document.getElementById('recorded-preview').style.display = 'block';
+          clearUpload();
+          updateGenBtn();
+        };
+        startWaveform(stream);
+        mediaRecorder.start();
+        isRecording = true; seconds = 0;
+        document.getElementById('mic-btn').classList.add('recording');
+        document.getElementById('mic-icon').setAttribute('stroke','white');
+        document.getElementById('mic-label').textContent = 'Tap to stop';
+        timerInterval = setInterval(()=>{ seconds++; const m=Math.floor(seconds/60),s=seconds%60; document.getElementById('mic-timer').textContent=m+':'+(s<10?'0':'')+s; },1000);
+      }catch(e){
+        if(e.name==='NotAllowedError'||e.name==='PermissionDeniedError'){
+          showMicError('Microphone access denied. Please allow mic access in your browser settings (usually the lock icon in the address bar).');
+        } else {
+          showMicError('Could not access microphone. Please check your device settings.');
+        }
+      }
+    }
+
+    function stopRecording(){
+      if(mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop();
+      isRecording = false;
+      clearInterval(timerInterval);
+      document.getElementById('mic-btn').classList.remove('recording');
+      document.getElementById('mic-icon').setAttribute('stroke','#9ca3af');
+      document.getElementById('mic-label').textContent = 'Tap to record';
+      document.getElementById('mic-timer').textContent = '';
+    }
+
+    function cancelOverwrite(){ document.getElementById('overwrite-confirm').style.display='none'; pendingOverwrite=false; }
+    function confirmOverwrite(){ document.getElementById('overwrite-confirm').style.display='none'; pendingOverwrite=false; clearRecording(); startRecording(); }
 
     function clearRecording(){ recordedFile=null; document.getElementById('recorded-preview').style.display='none'; updateGenBtn(); }
     function clearUpload(){ uploadedFile=null; document.getElementById('upload-zone').classList.remove('has-file'); document.getElementById('upload-text').textContent='Click to select an audio file'; }
 
+    function reRecord(){ clearRecording(); startRecording(); }
+
     function handleFile(input){
       const file=input.files[0]; if(!file) return;
+      if(file.size===0 || !file.type.startsWith('audio/')){
+        showFileWarn('Invalid file. Please upload an audio file (mp3, wav, m4a, webm).');
+        input.value='';
+        return;
+      }
       uploadedFile=file; clearRecording();
       document.getElementById('upload-zone').classList.add('has-file');
       document.getElementById('upload-text').innerHTML='<span class="upload-filename">'+file.name+'</span>';
       updateGenBtn();
     }
 
-    function updateGenBtn(){ document.getElementById('gen-btn').disabled=!(recordedFile||uploadedFile); }
-
-    function generateReport(){
-      const name = document.getElementById('worker-name').value.trim()||'Worker';
-      document.getElementById('gen-btn').disabled=true;
-      document.getElementById('gen-btn').textContent='Generating report...';
-      const bar=document.getElementById('loading-bar'), fill=document.getElementById('loading-fill');
-      bar.style.display='block'; let w=0;
-      const iv=setInterval(()=>{ w=Math.min(w+7,90); fill.style.width=w+'%'; },120);
-      setTimeout(()=>{
-        clearInterval(iv); fill.style.width='100%';
-        setTimeout(()=>{
-          const demo={ id:allReports.length+1, workerName:name, time:'Today, '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}), status:'new', summary:'Homepage redesign pushed to staging. Mobile navigation still in progress due to a dropdown z-index issue on iOS. Waiting on client feedback before the hero section can be finalized.', tasksCompleted:['Finished homepage redesign and pushed it to staging'], tasksInProgress:['Working on mobile navigation — dropdown z-index issue on iOS'], blockers:[], transcript:'Today I finished the homepage redesign and pushed it to staging. I am still working on the mobile navigation, running into some issues with the dropdown z-index on iOS. I am also waiting on client feedback before I can move forward with the hero section content.' };
-          allReports.unshift(demo);
-          bar.style.display='none'; fill.style.width='0%';
-          document.getElementById('gen-btn').textContent='Generate Report';
-          renderReport(demo);
-        },300);
-      },1800);
+    function updateGenBtn(){
+      const btn = document.getElementById('gen-btn');
+      if(recordedFile||uploadedFile){
+        btn.classList.remove('btn-disabled');
+      } else {
+        btn.classList.add('btn-disabled');
+        document.getElementById('disabled-tip').style.display='none';
+      }
     }
 
-    function renderItems(items, emptyText){
-      return items.length ? items.map(t=>`<div class="section-item"><span class="arrow">→</span><span>${t}</span></div>`).join('') : `<div class="section-empty">${emptyText}</div>`;
+    function handleGenBtnClick(){
+      const btn = document.getElementById('gen-btn');
+      if(btn.classList.contains('btn-disabled')){
+        document.getElementById('disabled-tip').style.display='block';
+        setTimeout(()=>{ document.getElementById('disabled-tip').style.display='none'; }, 2500);
+        return;
+      }
+      generateReport();
+    }
+
+    function generateReport(){
+      const nameVal = document.getElementById('worker-name').value.trim();
+      const nameInput = document.getElementById('worker-name');
+      const nameError = document.getElementById('name-error');
+      if(!nameVal){
+        nameInput.classList.add('error');
+        nameError.style.display='block';
+        nameInput.focus();
+        return;
+      }
+      nameInput.classList.remove('error');
+      nameError.style.display='none';
+
+      const name = nameVal;
+      const btn = document.getElementById('gen-btn');
+      btn.classList.add('btn-disabled');
+      btn.textContent='Generating report...';
+
+      const steps = document.getElementById('progress-steps');
+      steps.style.display='block';
+      const stepEls = [1,2,3].map(i=>document.getElementById('step-'+i));
+      const circleEls = [1,2,3].map(i=>document.getElementById('step-'+i+'-circle'));
+
+      function activateStep(i){
+        stepEls[i].classList.add('active');
+        circleEls[i].innerHTML='<div class="step-spinner"></div>';
+      }
+      function completeStep(i){
+        stepEls[i].classList.remove('active');
+        stepEls[i].classList.add('done');
+        circleEls[i].textContent='✓';
+      }
+
+      activateStep(0);
+      setTimeout(()=>{
+        completeStep(0);
+        activateStep(1);
+        setTimeout(()=>{
+          completeStep(1);
+          activateStep(2);
+          setTimeout(()=>{
+            completeStep(2);
+            setTimeout(()=>{
+              steps.style.display='none';
+              stepEls.forEach(s=>{ s.classList.remove('active','done'); });
+              circleEls.forEach((c,i)=>{ c.textContent=i+1; });
+              btn.classList.remove('btn-disabled');
+              btn.textContent='Generate Report';
+              const demo={ id:allReports.length+1, workerName:name, time:'Today, '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}), status:'new', summary:'Homepage redesign pushed to staging. Mobile navigation still in progress due to a dropdown z-index issue on iOS. Waiting on client feedback before the hero section can be finalized.', tasksCompleted:['Finished homepage redesign and pushed it to staging'], tasksInProgress:['Working on mobile navigation — dropdown z-index issue on iOS'], blockers:[], transcript:'Today I finished the homepage redesign and pushed it to staging. I am still working on the mobile navigation, running into some issues with the dropdown z-index on iOS. I am also waiting on client feedback before I can move forward with the hero section content.' };
+              currentReport = demo;
+              hasEdits = false;
+              showPreview(demo);
+            }, 300);
+          }, 600);
+        }, 700);
+      }, 800);
+    }
+
+    function renderPreviewItems(items){
+      if(!items.length) return '';
+      return items.map(t=>`<div class="preview-item"><span class="arrow">→</span><span contenteditable="true" oninput="markEdited()">${t}</span></div>`).join('');
+    }
+
+    function showPreviewSection(sectionId, contentId, items){
+      const section = document.getElementById(sectionId);
+      if(items.length){
+        section.style.display = 'block';
+        document.getElementById(contentId).innerHTML = renderPreviewItems(items);
+      } else {
+        section.style.display = 'none';
+      }
+    }
+
+    function markEdited(){ hasEdits=true; }
+
+    function showPreview(r){
+      document.getElementById('prev-summary').textContent=r.summary;
+      document.getElementById('prev-summary').addEventListener('input',markEdited);
+      showPreviewSection('prev-completed-section','prev-completed',r.tasksCompleted);
+      showPreviewSection('prev-progress-section','prev-progress',r.tasksInProgress);
+      showPreviewSection('prev-blockers-section','prev-blockers',r.blockers);
+      showScreen('preview');
+    }
+
+    function submitFromPreview(){
+      document.getElementById('submit-dialog').showModal();
+    }
+
+    function confirmSubmit(){
+      document.getElementById('submit-dialog').close();
+      // Read edited values from preview
+      const summary = document.getElementById('prev-summary').textContent.trim();
+      const getItems = (containerId) => {
+        return Array.from(document.getElementById(containerId).querySelectorAll('[contenteditable]')).map(el=>el.textContent.trim()).filter(t=>t);
+      };
+      currentReport.summary = summary;
+      currentReport.tasksCompleted = getItems('prev-completed');
+      currentReport.tasksInProgress = getItems('prev-progress');
+      currentReport.blockers = getItems('prev-blockers');
+      currentReport.status = currentReport.blockers.length ? 'blocked' : 'new';
+
+      allReports.unshift(currentReport);
+      lastSubmittedId = currentReport.id;
+      hasEdits = false;
+      renderReport(currentReport);
+      startUndoCountdown();
+    }
+
+    function startUndoCountdown(){
+      undoCountdown = 10;
+      document.getElementById('undo-countdown').textContent = undoCountdown;
+      document.getElementById('success-banner').style.display='flex';
+      clearInterval(undoTimer);
+      undoTimer = setInterval(()=>{
+        undoCountdown--;
+        document.getElementById('undo-countdown').textContent = undoCountdown;
+        if(undoCountdown<=0){
+          clearInterval(undoTimer);
+          document.getElementById('undo-btn').disabled=true;
+          document.getElementById('undo-btn').textContent='Submitted';
+          document.getElementById('undo-btn').style.opacity='0.5';
+        }
+      },1000);
+    }
+
+    function undoSubmit(){
+      clearInterval(undoTimer);
+      allReports = allReports.filter(r=>r.id!==lastSubmittedId);
+      lastSubmittedId=null;
+      newReport();
+    }
+
+    function renderItems(items){
+      const editStyle = `flex:1;outline:none;border-bottom:1px dashed #374151;padding-bottom:1px;`;
+      if(!items.length) return '';
+      return items.map(t=>`<div class="section-item"><span class="arrow">→</span><span contenteditable="true" style="${editStyle}" onfocus="this.style.borderBottomColor='#4f46e5'" onblur="this.style.borderBottomColor='#374151'">${t}</span></div>`).join('');
+    }
+
+    function showSection(sectionId, contentId, items){
+      const section = document.getElementById(sectionId);
+      if(items.length){
+        section.style.display = 'block';
+        document.getElementById(contentId).innerHTML = renderItems(items);
+      } else {
+        section.style.display = 'none';
+      }
     }
 
     function renderReport(r){
-      document.getElementById('rp-summary').textContent=r.summary;
-      document.getElementById('rp-completed').innerHTML=renderItems(r.tasksCompleted,'No completed tasks mentioned.');
-      document.getElementById('rp-progress').innerHTML=renderItems(r.tasksInProgress,'No in-progress tasks mentioned.');
-      document.getElementById('rp-blockers').innerHTML=renderItems(r.blockers,'No blockers mentioned.');
-      document.getElementById('transcript-box').textContent=r.transcript;
-      showTranscript=false; document.getElementById('transcript-box').style.display='none';
+      const summaryEl = document.getElementById('rp-summary');
+      summaryEl.textContent=r.summary;
+      summaryEl.contentEditable='true';
+      summaryEl.style.outline='none';
+      summaryEl.addEventListener('focus',()=>summaryEl.style.borderColor='#4f46e5');
+      summaryEl.addEventListener('blur',()=>summaryEl.style.borderColor='#1f2937');
+      showSection('rp-completed-section','rp-completed',r.tasksCompleted);
+      showSection('rp-progress-section','rp-progress',r.tasksInProgress);
+      showSection('rp-blockers-section','rp-blockers',r.blockers);
+      const tbEl = document.getElementById('transcript-box');
+      tbEl.textContent=r.transcript;
+      tbEl.contentEditable='true';
+      tbEl.style.outline='none';
+      showTranscript=false; tbEl.style.display='none';
+      document.querySelector('.transcript-toggle').textContent='View raw transcript';
+      // Reset undo button
+      const undoBtn = document.getElementById('undo-btn');
+      undoBtn.disabled=false;
+      undoBtn.style.opacity='1';
+      undoBtn.textContent='Undo \u2014 10s';
+      undoBtn.innerHTML='Undo &mdash; <span id="undo-countdown">10</span>s';
+      document.getElementById('success-banner').style.display='flex';
       showScreen('report');
     }
 
@@ -342,47 +897,77 @@
     }
 
     function newReport(){
+      const currentScreen = document.querySelector('.screen.active');
+      if(currentScreen && currentScreen.id==='screen-preview' && hasEdits){
+        document.getElementById('discard-dialog').showModal();
+        return;
+      }
+      doNewReport();
+    }
+
+    function confirmDiscard(){
+      document.getElementById('discard-dialog').close();
+      doNewReport();
+    }
+
+    function doNewReport(){
+      clearInterval(undoTimer);
       recordedFile=null; uploadedFile=null;
       document.getElementById('recorded-preview').style.display='none';
       clearUpload();
       document.getElementById('worker-name').value='';
-      document.getElementById('gen-btn').disabled=true;
+      document.getElementById('worker-name').classList.remove('error');
+      document.getElementById('name-error').style.display='none';
+      document.getElementById('gen-btn').classList.add('btn-disabled');
       document.getElementById('gen-btn').textContent='Generate Report';
+      document.getElementById('progress-steps').style.display='none';
+      document.getElementById('disabled-tip').style.display='none';
+      hideMicError();
+      hasEdits=false;
+      currentReport=null;
       showScreen('record');
     }
 
     function renderList(){
-      document.getElementById('report-list').innerHTML = allReports.map(r=>`
-        <div class="report-card" onclick="showDetail(${r.id})">
+      document.getElementById('report-list').innerHTML = allReports.map(r=>{
+        const isBlocked = r.blockers && r.blockers.length>0;
+        const preview = r.summary ? r.summary.slice(0,100)+(r.summary.length>100?'…':'') : (r.tasksCompleted[0]||'No tasks listed');
+        return `
+        <div class="report-card ${isBlocked?'status-blocked':'status-new'}" onclick="showDetail(${r.id})">
           <div class="rc-top">
             <div class="rc-left">
               <div class="avatar" style="width:36px;height:36px;font-size:12px;">${ini(r.workerName)}</div>
               <div><div class="rc-name">${r.workerName}</div><div class="rc-time">${r.time}</div></div>
             </div>
-            <span class="tag ${r.blockers.length?'blocked':'new'}">${r.blockers.length?'Blocked':'New'}</span>
+            <span class="tag ${isBlocked?'blocked':'new'}">${isBlocked?'Blocked':'New'}</span>
           </div>
-          <div class="rc-preview">${r.tasksCompleted[0]||'No tasks listed'}</div>
+          <div class="rc-preview">${preview}</div>
           <div class="rc-pills">
             <span class="pill"><span class="pill-dot g"></span>${r.tasksCompleted.length} done</span>
             <span class="pill"><span class="pill-dot b"></span>${r.tasksInProgress.length} in progress</span>
-            ${r.blockers.length?`<span class="pill"><span class="pill-dot r"></span>${r.blockers.length} blocker</span>`:''}
+            ${isBlocked?`<span class="pill"><span class="pill-dot r"></span>${r.blockers.length} blocker</span>`:''}
           </div>
-        </div>
-      `).join('');
+        </div>`;
+      }).join('');
     }
 
     function showDetail(id){
       const r=allReports.find(x=>x.id===id);
+      const isBlocked = r.blockers && r.blockers.length>0;
+      function renderCardItems(items, emptyText){
+        if(!items.length) return `<div class="section-empty">${emptyText}</div>`;
+        return items.map(t=>`<div class="md-task-card"><div class="section-item" style="margin:0;"><span class="arrow">→</span><span>${t}</span></div></div>`).join('');
+      }
       document.getElementById('md-content').innerHTML=`
         <div class="md-top">
           <div class="avatar" style="width:44px;height:44px;font-size:15px;">${ini(r.workerName)}</div>
           <div><div class="md-name">${r.workerName}</div><div class="md-time">${r.time}</div></div>
-          <span class="tag ${r.blockers.length?'blocked':'new'}" style="margin-left:auto;">${r.blockers.length?'Blocked':'New'}</span>
+          <span class="tag ${isBlocked?'blocked':'new'}" style="margin-left:auto;">${isBlocked?'Blocked':'New'}</span>
         </div>
         <div class="md-summary">${r.summary}</div>
-        <div class="section green"><div class="section-title">Tasks Completed</div>${renderItems(r.tasksCompleted,'None listed.')}</div>
-        <div class="section blue"><div class="section-title">In Progress</div>${renderItems(r.tasksInProgress,'None mentioned.')}</div>
-        <div class="section red"><div class="section-title">Blockers</div>${renderItems(r.blockers,'No blockers mentioned.')}</div>
+        <div class="section green"><div class="section-title">Tasks Completed</div>${renderCardItems(r.tasksCompleted,'None listed.')}</div>
+        <div class="section blue"><div class="section-title">In Progress</div>${renderCardItems(r.tasksInProgress,'None mentioned.')}</div>
+        <div class="section red"><div class="section-title">Blockers</div>${renderCardItems(r.blockers,'No blockers mentioned.')}</div>
         <div class="hint">In the real app, this report is auto-generated from ${r.workerName}'s voice recording via OpenAI Whisper + GPT-4o.</div>
       `;
       showScreen('manager-detail');
