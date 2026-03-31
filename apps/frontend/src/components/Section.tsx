@@ -26,12 +26,12 @@ export default function Section({
         {title}
       </h2>
       {items.length === 0 ? (
-        <p className="text-gray-600 text-sm italic">{empty}</p>
+        <p className="text-gray-500 text-sm italic">{empty}</p>
       ) : (
         <ul className="space-y-2">
           {items.map((item, i) => (
             <li key={i} className="text-gray-200 text-sm flex gap-2">
-              <span className="text-gray-600 mt-0.5">→</span>
+              <span className="text-gray-500 mt-0.5">→</span>
               <span>{item}</span>
             </li>
           ))}

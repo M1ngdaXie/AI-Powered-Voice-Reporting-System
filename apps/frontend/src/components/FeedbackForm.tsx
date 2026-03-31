@@ -61,7 +61,7 @@ export default function FeedbackForm({ reportId }: Props) {
   return (
     <div className="border border-gray-800 rounded-xl p-6 space-y-5">
       <h3 className="font-semibold text-lg">Quick Feedback</h3>
-      <p className="text-gray-500 text-sm">Help us understand if this is useful.</p>
+      <p className="text-gray-400 text-sm">Help us understand if this is useful.</p>
 
       <div>
         <p className="text-gray-300 text-sm mb-2">Was this report accurate?</p>
@@ -104,7 +104,7 @@ export default function FeedbackForm({ reportId }: Props) {
       </div>
 
       <div>
-        <p className="text-gray-300 text-sm mb-2">Any other thoughts? <span className="text-gray-600">(optional)</span></p>
+        <p className="text-gray-300 text-sm mb-2">Any other thoughts? <span className="text-gray-500">(optional)</span></p>
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}

@@ -42,7 +42,7 @@ export default function EditableSection({
       <div className="space-y-2">
         {items.map((item, i) => (
           <div key={i} className="flex gap-2 items-center">
-            <span className="text-gray-600 mt-0.5">→</span>
+            <span className="text-gray-500 mt-0.5">→</span>
             <input
               type="text"
               value={item}

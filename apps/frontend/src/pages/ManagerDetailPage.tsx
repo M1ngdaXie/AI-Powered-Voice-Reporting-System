@@ -24,7 +24,7 @@ export default function ManagerDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
-        <p className="text-gray-500">Loading...</p>
+        <p className="text-gray-400">Loading...</p>
       </div>
     );
   }
@@ -49,7 +49,7 @@ export default function ManagerDetailPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">{report.workerName}</h1>
-            <p className="text-gray-500 text-sm mt-1">
+            <p className="text-gray-400 text-sm mt-1">
               {new Date(report.timestamp + "Z").toLocaleString()}
             </p>
           </div>

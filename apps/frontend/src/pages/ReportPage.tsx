@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Section from "../components/Section";
 import EditableSection from "../components/EditableSection";
@@ -9,6 +9,7 @@ interface LocationState {
   id: number;
   transcript: string;
   report: Report;
+  justGenerated?: boolean;
 }
 
 export default function ReportPage() {
@@ -20,6 +21,33 @@ export default function ReportPage() {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<Report | null>(null);
   const [saving, setSaving] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(state?.justGenerated ?? false);
+  const [undoBanner, setUndoBanner] = useState<{ previous: Report; countdown: number } | null>(null);
+  const undoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Auto-dismiss success banner
+  useEffect(() => {
+    if (!showSuccess) return;
+    const t = setTimeout(() => setShowSuccess(false), 3000);
+    return () => clearTimeout(t);
+  }, [showSuccess]);
+
+  // Warn before leaving with unsaved edits
+  useEffect(() => {
+    if (!editing) return;
+    function handleBeforeUnload(e: BeforeUnloadEvent) {
+      e.preventDefault();
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [editing]);
+
+  // Clean up undo timer
+  useEffect(() => {
+    return () => {
+      if (undoTimerRef.current) clearInterval(undoTimerRef.current);
+    };
+  }, []);
 
   if (!state || !report) {
     navigate("/");
@@ -40,13 +68,17 @@ export default function ReportPage() {
   }
 
   function cancelEdit() {
+    if (!window.confirm("Discard unsaved changes?")) return;
     setEditing(false);
     setDraft(null);
   }
 
   async function saveEdit() {
-    if (!draft) return;
+    if (!draft || !report) return;
+    if (!window.confirm("Save changes to this report?")) return;
+
     setSaving(true);
+    const previousReport = { ...report };
     try {
       const cleaned = {
         summary: draft.summary,
@@ -63,14 +95,69 @@ export default function ReportPage() {
       setReport(cleaned);
       setEditing(false);
       setDraft(null);
+
+      // Start undo countdown
+      let countdown = 5;
+      setUndoBanner({ previous: previousReport, countdown });
+      undoTimerRef.current = setInterval(() => {
+        countdown -= 1;
+        if (countdown <= 0) {
+          if (undoTimerRef.current) clearInterval(undoTimerRef.current);
+          setUndoBanner(null);
+        } else {
+          setUndoBanner((prev) => prev ? { ...prev, countdown } : null);
+        }
+      }, 1000);
     } finally {
       setSaving(false);
     }
   }
 
+  async function handleUndo() {
+    if (!undoBanner) return;
+    if (undoTimerRef.current) clearInterval(undoTimerRef.current);
+    const prev = undoBanner.previous;
+    setUndoBanner(null);
+
+    await fetch(`/api/reports/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(prev),
+    });
+    setReport(prev);
+  }
+
+  function handleNewReport() {
+    if (editing && !window.confirm("You have unsaved edits. Leave anyway?")) return;
+    navigate("/");
+  }
+
   return (
     <div className="min-h-screen bg-gray-950 text-white p-6">
       <div className="max-w-2xl mx-auto space-y-6">
+        {/* Success banner */}
+        {showSuccess && (
+          <div className={`bg-green-950 border border-green-800 rounded-xl px-4 py-3 flex items-center gap-2 transition-opacity duration-500 ${showSuccess ? "opacity-100" : "opacity-0"}`}>
+            <svg className="w-5 h-5 text-green-400 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+            <p className="text-green-400 text-sm font-medium">Report generated successfully!</p>
+          </div>
+        )}
+
+        {/* Undo banner */}
+        {undoBanner && (
+          <div className="bg-indigo-950 border border-indigo-800 rounded-xl px-4 py-3 flex items-center justify-between">
+            <p className="text-indigo-300 text-sm">Changes saved! Undo within {undoBanner.countdown}s</p>
+            <button
+              onClick={handleUndo}
+              className="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors"
+            >
+              Undo
+            </button>
+          </div>
+        )}
+
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">Work Status Report</h1>
           <div className="flex items-center gap-3">
@@ -83,7 +170,7 @@ export default function ReportPage() {
               </button>
             )}
             <button
-              onClick={() => navigate("/")}
+              onClick={handleNewReport}
               className="text-gray-400 hover:text-white text-sm transition-colors"
             >
               ← New Report
