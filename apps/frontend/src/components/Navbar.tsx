@@ -80,6 +80,15 @@ export default function Navbar({ backTo, links = [], showSignOut, showMyReports 
             </Link>
           )}
 
+          {/* Help link */}
+          <Link
+            to="/help"
+            title="Help & FAQ"
+            className="w-7 h-7 rounded-lg bg-[#f1f5f9] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#333] flex items-center justify-center text-[#64748b] dark:text-[#9ca3af] hover:text-[#4f46e5] dark:hover:text-[#a78bfa] hover:border-[#4f46e5] dark:hover:border-[#8b5cf6] text-sm font-bold transition-colors shrink-0"
+          >
+            ?
+          </Link>
+
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}

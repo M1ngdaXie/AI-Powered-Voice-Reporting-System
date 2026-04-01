@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AudioWaveform from "../components/AudioWaveform";
 import ProgressSteps from "../components/ProgressSteps";
 import HelpModal from "../components/HelpModal";
@@ -298,18 +298,26 @@ export default function RecordPage() {
                 NEW UPDATE
               </span>
 
-              {/* Mic button */}
-              <button
-                type="button"
-                onClick={toggleRecording}
-                className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all ${
-                  isRecording
-                    ? "bg-[#dc2626] dark:bg-[#ef4444] shadow-[0_0_24px_rgba(239,68,68,0.5)] animate-pulse"
-                    : "bg-[#4f46e5] dark:bg-gradient-to-br dark:from-[#8b5cf6] dark:to-[#3b82f6] shadow-[0_8px_24px_rgba(79,70,229,0.35)] dark:shadow-[0_0_24px_rgba(139,92,246,0.4)] hover:opacity-90"
-                }`}
-              >
-                {isRecording ? "⏹️" : "🎙️"}
-              </button>
+              {/* Mic button with tooltip */}
+              <div className="relative group flex flex-col items-center">
+                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block z-10 pointer-events-none">
+                  <div className="bg-[#1e293b] dark:bg-[#e2e8f0] text-white dark:text-[#1e293b] text-xs px-3 py-1.5 rounded-lg shadow-lg text-center max-w-50 whitespace-normal">
+                    {isRecording ? "Tap to stop recording" : "Tap to record your work update — we'll transcribe it automatically"}
+                  </div>
+                  <div className="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-[#1e293b] dark:bg-[#e2e8f0] rotate-45 -mt-1" />
+                </div>
+                <button
+                  type="button"
+                  onClick={toggleRecording}
+                  className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all ${
+                    isRecording
+                      ? "bg-[#dc2626] dark:bg-[#ef4444] shadow-[0_0_24px_rgba(239,68,68,0.5)] animate-pulse"
+                      : "bg-[#4f46e5] dark:bg-gradient-to-br dark:from-[#8b5cf6] dark:to-[#3b82f6] shadow-[0_8px_24px_rgba(79,70,229,0.35)] dark:shadow-[0_0_24px_rgba(139,92,246,0.4)] hover:opacity-90"
+                  }`}
+                >
+                  {isRecording ? "⏹️" : "🎙️"}
+                </button>
+              </div>
 
               {/* Waveform inside the card */}
               {isRecording && analyser && <AudioWaveform analyser={analyser} />}
@@ -345,6 +353,7 @@ export default function RecordPage() {
               <div
                 className="w-full border-2 border-dashed border-[#cbd5e1] dark:border-[#444] rounded-xl p-6 text-center cursor-pointer hover:border-[#4f46e5] dark:hover:border-[#8b5cf6] transition-colors bg-[#f8fafc] dark:bg-[#1f1f1f]"
                 onClick={() => document.getElementById("audio-input")?.click()}
+                title="Upload a pre-recorded audio file instead of using the mic. Supports mp3, wav, m4a, webm up to 25 MB."
               >
                 <input
                   id="audio-input"
@@ -409,7 +418,7 @@ export default function RecordPage() {
 
               {/* Hint */}
               <p className="text-center text-[#94a3b8] dark:text-[#4b5563] text-xs">
-                Submit to generate your report · Min. 5 seconds
+                Submit to generate your report · Min. 5 seconds · <Link to="/help" className="underline hover:text-[#4f46e5] dark:hover:text-[#a78bfa] transition-colors">Need help?</Link>
               </p>
             </div>
 

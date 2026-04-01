@@ -196,13 +196,21 @@ export default function ReportPage() {
                   ✓ Submitted
                 </span>
               ) : (
-                <button
-                  onClick={handleSubmitReport}
-                  disabled={submitting}
-                  className="bg-[#15803d] dark:bg-[#16a34a] text-white text-sm font-bold px-4 py-2 rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
-                >
-                  {submitting ? "Submitting..." : "Submit Report"}
-                </button>
+                <>
+                  <button
+                    onClick={() => navigate("/my-reports")}
+                    className="bg-[#f1f5f9] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#333] text-[#64748b] dark:text-[#9ca3af] text-sm font-medium px-4 py-2 rounded-lg hover:opacity-80 transition-opacity"
+                  >
+                    💾 Save as Draft
+                  </button>
+                  <button
+                    onClick={handleSubmitReport}
+                    disabled={submitting}
+                    className="bg-[#15803d] dark:bg-[#16a34a] text-white text-sm font-bold px-4 py-2 rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
+                  >
+                    {submitting ? "Submitting..." : "Submit Report"}
+                  </button>
+                </>
               )
             )}
             {/* Edit button — shown when NOT in edit mode */}

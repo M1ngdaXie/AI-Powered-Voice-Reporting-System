@@ -12,6 +12,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import MyReportsPage from "./pages/MyReportsPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
+import HelpPage from "./pages/HelpPage";
 
 export default function App() {
   return (
@@ -47,6 +48,9 @@ export default function App() {
           <Route path="/admin/users" element={
             <ProtectedRoute><RoleRoute role="manager"><AdminUsersPage /></RoleRoute></ProtectedRoute>
           } />
+
+          {/* Help — accessible to all authenticated users */}
+          <Route path="/help" element={<ProtectedRoute><HelpPage /></ProtectedRoute>} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
