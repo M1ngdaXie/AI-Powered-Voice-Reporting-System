@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import type { ReportRecord } from "../types";
+import Navbar from "../components/Navbar";
 
 export default function MyReportsPage() {
-  const { auth, logout } = useAuth();
   const navigate = useNavigate();
   const [reports, setReports] = useState<ReportRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -17,84 +16,66 @@ export default function MyReportsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  async function handleLogout() {
-    await logout();
-    navigate("/login");
-  }
-
-  const workerName = auth.status === "authenticated" ? auth.name : "";
-
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <Link to="/" className="text-gray-500 hover:text-gray-300 transition-colors">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </Link>
-            <div>
-              <h1 className="text-lg font-semibold">My Reports</h1>
-              {workerName && <p className="text-xs text-gray-500">{workerName}</p>}
-            </div>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
-          >
-            Sign out
-          </button>
-        </div>
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0d0d0d]">
+      <Navbar showSignOut />
+      <div className="max-w-2xl mx-auto px-4 pb-6">
 
-        {/* Content */}
+        <h1 className="text-2xl font-extrabold text-[#1e293b] dark:text-white mb-6">My Reports</h1>
+
+        {/* Loading state */}
         {loading && (
           <div className="flex justify-center py-12">
-            <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-[#4f46e5] dark:border-[#8b5cf6] border-t-transparent rounded-full animate-spin" />
           </div>
         )}
 
+        {/* Empty state */}
         {!loading && reports.length === 0 && (
           <div className="text-center py-16">
-            <div className="w-16 h-16 bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <p className="text-gray-500">No reports yet</p>
-            <Link to="/" className="text-indigo-400 hover:text-indigo-300 text-sm mt-2 inline-block transition-colors">
-              Record your first report →
+            <p className="text-[#94a3b8] dark:text-[#6b7280] mb-4">No reports yet — record your first update</p>
+            <Link
+              to="/"
+              className="bg-[#4f46e5] dark:bg-gradient-to-r dark:from-[#8b5cf6] dark:to-[#3b82f6] text-white text-sm font-bold px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+            >
+              Record now
             </Link>
           </div>
         )}
 
-        <div className="space-y-3">
-          {reports.map((report) => (
-            <button
-              key={report.id}
-              onClick={() => navigate("/report", { state: { id: report.id, report, transcript: report.transcript } })}
-              className="w-full text-left bg-gray-900 border border-gray-800 hover:border-gray-600 rounded-2xl p-4 transition-colors group"
-            >
-              <div className="flex items-start justify-between gap-3 mb-2">
-                <p className="text-sm text-gray-300 line-clamp-2 leading-relaxed">{report.summary}</p>
-                {report.blockers.length > 0 && (
-                  <span className="shrink-0 text-xs bg-red-900/50 text-red-400 border border-red-800/50 px-2 py-0.5 rounded-full">
-                    Blocked
-                  </span>
-                )}
+        {/* Report cards */}
+        {!loading && reports.length > 0 && (
+          <div className="flex flex-col gap-3">
+            {reports.map((r) => (
+              <div
+                key={r.id}
+                onClick={() => navigate("/report", { state: { id: r.id, report: r, transcript: r.transcript } })}
+                className={`bg-white dark:bg-[#161616] border-l-[3px] rounded-r-xl cursor-pointer hover:opacity-90 transition-opacity shadow-[0_1px_4px_rgba(0,0,0,0.05)] dark:shadow-none ${
+                  r.blockers.length > 0
+                    ? "border-l-[#f87171] border border-[#fecaca] dark:border-[#ef4444]/25"
+                    : "border-l-[#4ade80] border border-[#bbf7d0] dark:border-[#16a34a]/20"
+                } p-4`}
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <p className="text-[#1e293b] dark:text-[#e2e8f0] text-sm font-semibold line-clamp-2 flex-1 mr-3">{r.summary}</p>
+                  {r.blockers.length > 0 ? (
+                    <span className="flex-shrink-0 bg-[#fef2f2] dark:bg-[#200a0a] border border-[#fecaca] dark:border-[#ef4444]/40 text-[#dc2626] dark:text-[#f87171] text-[10px] font-bold px-2 py-0.5 rounded-full">🚫 BLOCKED</span>
+                  ) : (
+                    <span className="flex-shrink-0 bg-[#f0fdf4] dark:bg-[#052e16] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-[10px] font-bold px-2 py-0.5 rounded-full">✓ CLEAR</span>
+                  )}
+                </div>
+                <p className="text-[#94a3b8] dark:text-[#6b7280] text-xs mb-3">
+                  {new Date(r.timestamp).toLocaleString()}
+                </p>
+                <div className="flex gap-2">
+                  <span className="bg-[#f0fdf4] dark:bg-[#16a34a]/20 text-[#15803d] dark:text-[#4ade80] text-xs px-2 py-0.5 rounded">✓ {r.tasksCompleted.length}</span>
+                  <span className="bg-[#eff6ff] dark:bg-[#3b82f6]/20 text-[#1d4ed8] dark:text-[#60a5fa] text-xs px-2 py-0.5 rounded">⚡ {r.tasksInProgress.length}</span>
+                  <span className="bg-[#fef2f2] dark:bg-[#ef4444]/20 text-[#dc2626] dark:text-[#f87171] text-xs px-2 py-0.5 rounded">🚫 {r.blockers.length}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-4 text-xs text-gray-600">
-                <span>{new Date(report.timestamp + "Z").toLocaleString()}</span>
-                <span className="text-green-700">{report.tasksCompleted.length} done</span>
-                <span className="text-blue-700">{report.tasksInProgress.length} in progress</span>
-                {report.blockers.length > 0 && (
-                  <span className="text-red-700">{report.blockers.length} blocker{report.blockers.length !== 1 ? "s" : ""}</span>
-                )}
-              </div>
-            </button>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

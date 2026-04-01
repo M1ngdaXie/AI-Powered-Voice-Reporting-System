@@ -26,14 +26,14 @@ export default function ProgressSteps({ currentStep }: Props) {
             <div
               className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                 isComplete
-                  ? "bg-green-500"
+                  ? "bg-[#f0fdf4] dark:bg-[#16a34a30] border border-[#bbf7d0] dark:border-[#16a34a40]"
                   : isActive
-                    ? "bg-indigo-500 animate-pulse"
-                    : "bg-gray-700"
+                    ? "bg-[#ede9fe] dark:bg-[#8b5cf620] border border-[#c4b5fd] dark:border-[#8b5cf640] animate-pulse"
+                    : "bg-[#f1f5f9] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#333]"
               }`}
             >
               {isComplete ? (
-                <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="w-3.5 h-3.5 text-[#15803d] dark:text-[#4ade80]" viewBox="0 0 20 20" fill="currentColor">
                   <path
                     fillRule="evenodd"
                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -41,9 +41,9 @@ export default function ProgressSteps({ currentStep }: Props) {
                   />
                 </svg>
               ) : isActive ? (
-                <div className="w-2 h-2 rounded-full bg-white" />
+                <div className="w-2 h-2 rounded-full bg-[#7c3aed] dark:bg-[#a78bfa]" />
               ) : (
-                <div className="w-2 h-2 rounded-full bg-gray-500" />
+                <div className="w-2 h-2 rounded-full bg-[#94a3b8] dark:bg-[#4b5563]" />
               )}
             </div>
 
@@ -51,10 +51,10 @@ export default function ProgressSteps({ currentStep }: Props) {
             <span
               className={`text-sm ${
                 isComplete
-                  ? "text-green-400"
+                  ? "text-[#15803d] dark:text-[#4ade80]"
                   : isActive
-                    ? "text-white font-medium"
-                    : "text-gray-600"
+                    ? "text-[#1e293b] dark:text-white font-medium"
+                    : "text-[#94a3b8] dark:text-[#6b7280]"
               }`}
             >
               {step.label}

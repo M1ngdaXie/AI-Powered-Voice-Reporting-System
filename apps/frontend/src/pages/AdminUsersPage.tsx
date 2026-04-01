@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import { avatarColor, initials } from "../utils/avatar";
 
 interface User {
-  userId: number;  // was: id
+  userId: number;
   name: string;
   email: string;
   role: "worker" | "manager";
@@ -39,67 +40,94 @@ export default function AdminUsersPage() {
       setError(data.error ?? "Failed to update role");
       return;
     }
-    setUsers((prev) => prev.map((u) => u.userId === user.userId ? { ...u, role: newRole } : u));
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.userId === user.userId ? { ...u, role: newRole } : u
+      )
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="bg-[#f8fafc] dark:bg-[#0d0d0d] flex items-center justify-center min-h-screen">
+        <div className="w-8 h-8 border-2 border-[#4f46e5] dark:border-[#8b5cf6] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0d0d0d]">
+      <Navbar backTo={{ href: "/manager", label: "Dashboard" }} />
+
       <div className="max-w-2xl mx-auto px-4 py-6">
-        <div className="flex items-center gap-3 mb-6">
-          <Link to="/manager" className="text-gray-500 hover:text-gray-300 transition-colors">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </Link>
-          <div>
-            <h1 className="text-lg font-semibold">Manage Users</h1>
-            <p className="text-xs text-gray-500">{users.length} account{users.length !== 1 ? "s" : ""}</p>
-          </div>
+        <div className="mb-6">
+          <h1 className="text-[#1e293b] dark:text-white text-2xl font-extrabold">
+            Manage Users
+          </h1>
+          <p className="text-[#64748b] dark:text-[#6b7280] text-sm mt-1">
+            Promote or demote team members
+          </p>
         </div>
 
         {error && (
-          <div className="bg-red-950 border border-red-800 rounded-xl px-4 py-3 mb-4">
-            <p className="text-red-400 text-sm">{error}</p>
+          <div className="bg-[#fef2f2] dark:bg-[#200a0a] border border-[#fecaca] dark:border-[#ef444430] rounded-xl px-4 py-3 mb-4">
+            <p className="text-[#dc2626] dark:text-[#f87171] text-sm">{error}</p>
           </div>
         )}
 
-        {loading && (
-          <div className="flex justify-center py-12">
-            <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          </div>
-        )}
-
-        <div className="space-y-2">
+        <div className="space-y-3">
           {users.map((user) => (
             <div
               key={user.userId}
-              className="flex items-center justify-between bg-gray-900 border border-gray-800 rounded-2xl p-4"
+              className={`bg-white dark:bg-[#161616] border rounded-2xl p-4 flex items-center gap-3 ${
+                user.role === "manager"
+                  ? "border-[#ddd6fe] dark:border-[#8b5cf630]"
+                  : "border-[#e2e8f0] dark:border-[#2a2a2a]"
+              }`}
             >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-indigo-900/50 flex items-center justify-center text-sm font-medium text-indigo-300">
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <p className="font-medium text-sm">{user.name}</p>
-                  <p className="text-xs text-gray-500">{user.email}</p>
-                </div>
+              <div
+                className="w-10 h-10 rounded-full text-white font-bold text-sm flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: avatarColor(user.name) }}
+              >
+                {initials(user.name)}
               </div>
-              <div className="flex items-center gap-2">
-                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+
+              <div className="flex-1 min-w-0">
+                <p className="text-[#1e293b] dark:text-[#e2e8f0] text-sm font-semibold">
+                  {user.name}
+                </p>
+                <p className="text-[#64748b] dark:text-[#6b7280] text-xs truncate">
+                  {user.email}
+                </p>
+              </div>
+
+              <span
+                className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${
                   user.role === "manager"
-                    ? "bg-indigo-900/50 text-indigo-300 border border-indigo-800/50"
-                    : "bg-gray-800 text-gray-400 border border-gray-700"
-                }`}>
-                  {user.role}
-                </span>
+                    ? "bg-[#ede9fe] dark:bg-[#8b5cf620] border border-[#ddd6fe] dark:border-[#8b5cf640] text-[#7c3aed] dark:text-[#a78bfa]"
+                    : "bg-[#f1f5f9] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#333] text-[#64748b] dark:text-[#9ca3af]"
+                }`}
+              >
+                {user.role === "manager" ? "Manager" : "Worker"}
+              </span>
+
+              {user.role === "worker" ? (
                 <button
                   onClick={() => toggleRole(user)}
                   disabled={updating === user.userId}
-                  className="text-xs text-gray-500 hover:text-white border border-gray-700 hover:border-gray-500 rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40"
+                  className="bg-[#4f46e5] dark:bg-gradient-to-br dark:from-[#8b5cf6] dark:to-[#3b82f6] text-white text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap disabled:opacity-40"
                 >
-                  {updating === user.userId ? "..." : user.role === "worker" ? "Promote" : "Demote"}
+                  {updating === user.userId ? "..." : "Promote"}
                 </button>
-              </div>
+              ) : (
+                <button
+                  onClick={() => toggleRole(user)}
+                  disabled={updating === user.userId}
+                  className="bg-[#fef2f2] dark:bg-[#200a0a] border border-[#fecaca] dark:border-[#ef444430] text-[#dc2626] dark:text-[#f87171] text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap disabled:opacity-40"
+                >
+                  {updating === user.userId ? "..." : "Demote"}
+                </button>
+              )}
             </div>
           ))}
         </div>

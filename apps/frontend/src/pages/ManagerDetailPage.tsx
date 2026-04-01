@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Section from "../components/Section";
+import Navbar from "../components/Navbar";
+import { avatarColor, initials } from "../utils/avatar";
 import type { ReportRecord } from "../types";
 
 export default function ManagerDetailPage() {
@@ -9,6 +11,7 @@ export default function ManagerDetailPage() {
   const [report, setReport] = useState<ReportRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [showTranscript, setShowTranscript] = useState(false);
 
   useEffect(() => {
     fetch(`/api/reports/${id}`, { credentials: "include" })
@@ -23,19 +26,19 @@ export default function ManagerDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
-        <p className="text-gray-400">Loading...</p>
+      <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0d0d0d] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#4f46e5] dark:border-[#8b5cf6] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (error || !report) {
     return (
-      <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center gap-4">
-        <p className="text-gray-400">Report not found.</p>
+      <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0d0d0d] flex flex-col items-center justify-center gap-4">
+        <p className="text-[#64748b] dark:text-[#9ca3af]">Report not found.</p>
         <button
           onClick={() => navigate("/manager")}
-          className="text-indigo-400 hover:text-indigo-300 text-sm transition-colors"
+          className="text-[#4f46e5] dark:text-[#8b5cf6] hover:opacity-80 text-sm transition-opacity"
         >
           ← Back to Dashboard
         </button>
@@ -43,38 +46,100 @@ export default function ManagerDetailPage() {
     );
   }
 
+  const hasBlockers = report.blockers.length > 0;
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6">
-      <div className="max-w-2xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">{report.workerName}</h1>
-            <p className="text-gray-400 text-sm mt-1">
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0d0d0d]">
+      <Navbar backTo={{ href: "/manager", label: "Dashboard" }} />
+
+      <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
+        {/* Worker header card */}
+        <div className="bg-white dark:bg-[#161616] border border-[#e2e8f0] dark:border-[#2a2a2a] rounded-2xl p-6 flex items-center gap-4">
+          <div
+            className="w-14 h-14 rounded-full text-white font-bold text-xl flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: avatarColor(report.workerName) }}
+          >
+            {initials(report.workerName)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-[#1e293b] dark:text-[#e2e8f0] text-xl font-bold truncate">
+              {report.workerName}
+            </h2>
+            <p className="text-[#64748b] dark:text-[#9ca3af] text-sm">
               {new Date(report.timestamp + "Z").toLocaleString()}
             </p>
           </div>
-          <button
-            onClick={() => navigate("/manager")}
-            className="text-gray-400 hover:text-white text-sm transition-colors"
-          >
-            ← Back
-          </button>
+          <div className="flex-shrink-0">
+            {hasBlockers ? (
+              <span className="bg-[#fef2f2] dark:bg-[#160808] border border-[#fecaca] dark:border-[#ef444440] text-[#dc2626] dark:text-[#f87171] text-xs font-semibold px-2.5 py-1 rounded-full">
+                🚫 BLOCKED
+              </span>
+            ) : (
+              <span className="bg-[#f0fdf4] dark:bg-[#0a1a0a] border border-[#bbf7d0] dark:border-[#16a34a40] text-[#15803d] dark:text-[#4ade80] text-xs font-semibold px-2.5 py-1 rounded-full">
+                ✓ CLEAR
+              </span>
+            )}
+          </div>
         </div>
 
-        <p className="text-gray-400 text-sm">{report.summary}</p>
-
-        <Section title="Tasks Completed" color="green" items={report.tasksCompleted} empty="No completed tasks mentioned." />
-        <Section title="In Progress" color="blue" items={report.tasksInProgress} empty="No in-progress tasks mentioned." />
-        <Section title="Blockers" color="red" items={report.blockers} empty="No blockers mentioned." />
-
-        <details className="group">
-          <summary className="text-gray-500 text-sm cursor-pointer hover:text-gray-300 transition-colors">
-            View raw transcript
-          </summary>
-          <p className="mt-3 text-gray-400 text-sm bg-gray-900 rounded-xl p-4 leading-relaxed">
-            {report.transcript}
+        {/* AI Summary card */}
+        <div className="bg-white dark:bg-[#161616] border border-[#e2e8f0] dark:border-[#8b5cf640] rounded-2xl p-5 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#8b5cf6] to-[#3b82f6]" />
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-5 h-5 rounded bg-[#ede9fe] dark:bg-[#8b5cf620] border border-[#ddd6fe] dark:border-[#8b5cf640] text-xs flex items-center justify-center">
+              ✦
+            </div>
+            <span className="text-[#7c3aed] dark:text-[#a78bfa] text-xs uppercase tracking-widest font-bold">
+              AI Summary
+            </span>
+          </div>
+          <p className="text-[#1e293b] dark:text-[#e2e8f0] text-sm leading-relaxed mt-2">
+            {report.summary}
           </p>
-        </details>
+        </div>
+
+        {/* Section cards */}
+        <Section
+          title="Tasks Completed"
+          color="green"
+          items={report.tasksCompleted}
+          emptyMessage="No completed tasks mentioned."
+        />
+        <Section
+          title="In Progress"
+          color="blue"
+          items={report.tasksInProgress}
+          emptyMessage="No in-progress tasks mentioned."
+        />
+        <Section
+          title="Blockers"
+          color="red"
+          items={report.blockers}
+          emptyMessage="No blockers mentioned."
+        />
+
+        {/* Collapsible transcript */}
+        <div className="bg-white dark:bg-[#161616] border border-[#e2e8f0] dark:border-[#2a2a2a] rounded-xl overflow-hidden">
+          <button
+            onClick={() => setShowTranscript((v) => !v)}
+            className="w-full px-4 py-3 flex items-center justify-between hover:bg-[#f8fafc] dark:hover:bg-[#1f1f1f] transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-sm">📄</span>
+              <span className="text-[#64748b] dark:text-[#9ca3af] text-sm font-medium">Raw Transcript</span>
+            </div>
+            <span className="text-[#94a3b8] dark:text-[#6b7280] text-xs">
+              {showTranscript ? "Hide ▲" : "Show ▼"}
+            </span>
+          </button>
+          {showTranscript && (
+            <div className="px-4 pb-4 border-t border-[#e2e8f0] dark:border-[#2a2a2a]">
+              <p className="text-[#64748b] dark:text-[#9ca3af] text-sm leading-relaxed pt-3">
+                {report.transcript}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

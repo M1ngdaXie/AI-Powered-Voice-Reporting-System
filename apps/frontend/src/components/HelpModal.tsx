@@ -15,18 +15,18 @@ export default function HelpModal({ open, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
       <div
-        className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md p-6 space-y-6"
+        className="bg-white dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#2a2a2a] rounded-2xl w-full max-w-md p-6 space-y-6"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-white">How it works</h2>
+          <h2 className="text-[#1e293b] dark:text-white text-lg font-bold">How it works</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-white transition-colors text-xl leading-none"
+            className="text-[#94a3b8] dark:text-[#6b7280] hover:text-[#1e293b] dark:hover:text-white transition-colors text-xl leading-none"
           >
             ×
           </button>
@@ -35,14 +35,14 @@ export default function HelpModal({ open, onClose }: Props) {
         <div className="space-y-4">
           {STEPS.map((step, i) => (
             <div key={i} className="flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-lg shrink-0">
+              <div className="w-10 h-10 rounded-full bg-[#f1f5f9] dark:bg-[#161616] border border-[#e2e8f0] dark:border-[#2a2a2a] flex items-center justify-center text-lg shrink-0">
                 {step.icon}
               </div>
               <div>
-                <p className="text-white text-sm font-medium">
+                <p className="text-[#1e293b] dark:text-white text-sm font-medium">
                   {i + 1}. {step.title}
                 </p>
-                <p className="text-gray-400 text-sm">{step.desc}</p>
+                <p className="text-[#64748b] dark:text-[#9ca3af] text-sm">{step.desc}</p>
               </div>
             </div>
           ))}
@@ -50,7 +50,7 @@ export default function HelpModal({ open, onClose }: Props) {
 
         <button
           onClick={onClose}
-          className="w-full bg-gray-800 hover:bg-gray-700 text-white py-2.5 rounded-xl text-sm font-medium transition-colors"
+          className="bg-[#f1f5f9] dark:bg-[#161616] hover:bg-[#e2e8f0] dark:hover:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#2a2a2a] text-[#1e293b] dark:text-white py-2.5 rounded-xl text-sm font-medium transition-colors w-full"
         >
           Got it
         </button>

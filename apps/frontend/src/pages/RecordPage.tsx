@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AudioWaveform from "../components/AudioWaveform";
 import ProgressSteps from "../components/ProgressSteps";
 import HelpModal from "../components/HelpModal";
+import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
 
 type LoadingStep = "uploading" | "transcribing" | "structuring" | "done";
@@ -22,7 +23,7 @@ function getMicDenialHelp(): string {
 }
 
 export default function RecordPage() {
-  const { auth, logout } = useAuth();
+  const { auth } = useAuth();
   const [file, setFile] = useState<File | null>(null);
   const [recordingSource, setRecordingSource] = useState<"mic" | "upload" | null>(null);
   const workerName = auth.status === "authenticated" ? auth.name : "";
@@ -243,177 +244,179 @@ export default function RecordPage() {
   const durationSec = Math.floor(recordingDuration / 1000);
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0d0d0d] text-[#1e293b] dark:text-white">
+      <Navbar showMyReports showSignOut />
+      <div className="flex flex-col items-center px-6 pb-6">
       <div className="w-full max-w-md">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-3xl font-bold">Voice Work Report</h1>
-          <button
-            onClick={() => setShowHelp(true)}
-            className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-700 flex items-center justify-center text-gray-400 hover:text-white text-sm transition-colors"
-          >
-            ?
-          </button>
-        </div>
-        <div className="flex items-center justify-between mb-8">
-          <p className="text-gray-400">Record or upload audio and we'll generate your report.</p>
-          {workerName && <span className="text-sm text-gray-400">{workerName}</span>}
-        </div>
+
+        {/* Username pill */}
+        {workerName && (
+          <div className="flex justify-center mb-5">
+            <span className="bg-[#ede9fe] dark:bg-[#8b5cf6]/10 text-[#5b21b6] dark:text-[#a78bfa] font-semibold px-3 py-1 rounded-full border border-[#c4b5fd] dark:border-[#8b5cf6]/30 text-sm">
+              {workerName}
+            </span>
+          </div>
+        )}
 
         <HelpModal open={showHelp} onClose={() => setShowHelp(false)} />
 
-        {/* Progress stepper overlay */}
+        {/* Progress stepper */}
         {loadingStep && (
-          <div className="mb-8 bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <div className="mb-6 bg-white dark:bg-[#161616] border border-[#e2e8f0] dark:border-[#2a2a2a] rounded-2xl p-6 shadow-[0_2px_8px_rgba(79,70,229,0.08)] dark:shadow-none">
             <ProgressSteps currentStep={loadingStep} />
           </div>
         )}
 
         {!loadingStep && (
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Onboarding tooltip */}
             {showOnboarding && (
-              <div className="relative bg-indigo-600 text-white rounded-xl p-4 shadow-xl">
+              <div className="relative bg-[#4f46e5] dark:bg-gradient-to-r dark:from-[#8b5cf6] dark:to-[#3b82f6] text-white rounded-2xl p-4 shadow-xl">
                 <p className="text-sm font-medium mb-1">Welcome! Tap the mic below to record your work update.</p>
-                <p className="text-indigo-200 text-xs mb-3">We'll turn your voice into a structured report automatically.</p>
+                <p className="text-indigo-200 dark:text-white/70 text-xs mb-3">We'll turn your voice into a structured report automatically.</p>
                 <button
+                  type="button"
                   onClick={() => {
                     setShowOnboarding(false);
                     localStorage.setItem("onboarded", "true");
                   }}
-                  className="text-xs font-medium bg-indigo-500 hover:bg-indigo-400 px-3 py-1 rounded-lg transition-colors"
+                  className="text-xs font-medium bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg transition-colors"
                 >
                   Got it
                 </button>
-                <div className="absolute left-1/2 -translate-x-1/2 top-full w-3 h-3 bg-indigo-600 rotate-45 -mt-1.5" />
+                <div className="absolute left-1/2 -translate-x-1/2 top-full w-3 h-3 bg-[#4f46e5] dark:bg-[#8b5cf6] rotate-45 -mt-1.5" />
               </div>
             )}
 
-            {/* Mic button */}
-            <div className="flex flex-col items-center gap-3">
+            {/* Main record card */}
+            <div className="bg-white dark:bg-[#161616] border border-[#e2e8f0] dark:border-[#8b5cf6]/20 rounded-2xl p-8 flex flex-col items-center gap-5 shadow-[0_4px_16px_rgba(79,70,229,0.08)] dark:shadow-none relative overflow-hidden">
+              {/* Gradient top bar */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#8b5cf6] to-[#3b82f6]" />
+
+              {/* "NEW UPDATE" label */}
+              <span className="text-[10px] font-bold uppercase tracking-[.1em] text-[#4f46e5] dark:text-[#8b5cf6]">
+                NEW UPDATE
+              </span>
+
+              {/* Mic button */}
               <button
                 type="button"
                 onClick={toggleRecording}
-                className={`w-20 h-20 rounded-full flex items-center justify-center transition-all ${
+                className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all ${
                   isRecording
-                    ? "bg-red-600 hover:bg-red-500 animate-pulse"
-                    : "bg-gray-800 hover:bg-gray-700 border border-gray-600"
+                    ? "bg-[#dc2626] dark:bg-[#ef4444] shadow-[0_0_24px_rgba(239,68,68,0.5)] animate-pulse"
+                    : "bg-[#4f46e5] dark:bg-gradient-to-br dark:from-[#8b5cf6] dark:to-[#3b82f6] shadow-[0_8px_24px_rgba(79,70,229,0.35)] dark:shadow-[0_0_24px_rgba(139,92,246,0.4)] hover:opacity-90"
                 }`}
               >
-                {isRecording ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-                    <rect x="6" y="6" width="12" height="12" rx="2" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-gray-300" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 1a4 4 0 0 0-4 4v7a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4Z" />
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V23h2v-2.06A9 9 0 0 0 21 12v-2h-2Z" />
-                  </svg>
-                )}
+                {isRecording ? "⏹️" : "🎙️"}
               </button>
 
-              {/* Waveform */}
+              {/* Waveform inside the card */}
               {isRecording && analyser && <AudioWaveform analyser={analyser} />}
 
-              <p className={`text-sm ${isRecording ? "text-red-400" : "text-gray-500"}`}>
+              {/* Status text */}
+              <p className={`text-sm font-medium ${isRecording ? "text-[#dc2626] dark:text-[#f87171]" : "text-[#64748b] dark:text-[#9ca3af]"}`}>
                 {isRecording
-                  ? `Recording... ${durationSec}s${durationSec < 5 ? " (min 5s)" : " — tap to stop"}`
+                  ? durationSec < 5
+                    ? `Recording · ${durationSec}s (min 5s)`
+                    : `Recording · ${durationSec}s — tap to stop`
                   : "Tap to record"}
+              </p>
+
+              {/* Re-record button */}
+              {file && recordingSource === "mic" && !isRecording && (
+                <button
+                  type="button"
+                  onClick={startRecording}
+                  className="w-full text-sm text-[#64748b] dark:text-[#9ca3af] hover:text-[#1e293b] dark:hover:text-white border border-[#e2e8f0] dark:border-[#333] hover:border-[#4f46e5] dark:hover:border-[#8b5cf6] rounded-xl py-2 transition-colors"
+                >
+                  Re-record
+                </button>
+              )}
+
+              {/* Divider */}
+              <div className="flex items-center gap-3 w-full">
+                <div className="h-px flex-1 bg-[#e2e8f0] dark:bg-[#1f1f1f]" />
+                <span className="text-[#94a3b8] dark:text-[#6b7280] text-xs uppercase">or</span>
+                <div className="h-px flex-1 bg-[#e2e8f0] dark:bg-[#1f1f1f]" />
+              </div>
+
+              {/* File upload */}
+              <div
+                className="w-full border-2 border-dashed border-[#cbd5e1] dark:border-[#444] rounded-xl p-6 text-center cursor-pointer hover:border-[#4f46e5] dark:hover:border-[#8b5cf6] transition-colors bg-[#f8fafc] dark:bg-[#1f1f1f]"
+                onClick={() => document.getElementById("audio-input")?.click()}
+              >
+                <input
+                  id="audio-input"
+                  type="file"
+                  accept="audio/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleFileUpload(f);
+                  }}
+                />
+                {file ? (
+                  <div>
+                    <p className="text-[#4f46e5] dark:text-[#a78bfa] font-semibold text-sm">{file.name}</p>
+                    <p className="text-[#64748b] dark:text-[#9ca3af] text-sm mt-1">{(file.size / 1024).toFixed(1)} KB</p>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-[#64748b] dark:text-[#9ca3af] text-sm">Click to select an audio file</p>
+                    <p className="text-[#94a3b8] dark:text-[#6b7280] text-xs mt-1">mp3, wav, m4a, webm supported</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Error messages */}
+              {error && (
+                <div
+                  className={`w-full text-sm rounded-xl px-4 py-3 border ${
+                    errorType === "mic" || errorType === "api"
+                      ? "text-[#dc2626] dark:text-[#f87171] bg-[#fef2f2] dark:bg-[#160808] border-[#fecaca] dark:border-[#ef4444]/30"
+                      : "text-[#92400e] dark:text-[#fbbf24] bg-[#fffbeb] dark:bg-[#1a1000] border-[#fde68a] dark:border-[#f59e0b]/30"
+                  }`}
+                >
+                  {error}
+                </div>
+              )}
+
+              {/* Submit with disabled tooltip */}
+              <div className="relative w-full">
+                {disabledTooltip && (
+                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#1e293b] dark:bg-[#e2e8f0] text-white dark:text-[#1e293b] text-xs px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg z-10">
+                    {disabledTooltip}
+                    <div className="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-[#1e293b] dark:bg-[#e2e8f0] rotate-45 -mt-1" />
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  disabled={!file || isRecording}
+                  onClick={(e) => {
+                    if (!file || isRecording || loadingStep) {
+                      e.preventDefault();
+                      showDisabledTooltip();
+                    }
+                  }}
+                  className={`w-full bg-[#4f46e5] dark:bg-gradient-to-r dark:from-[#8b5cf6] dark:to-[#3b82f6] text-white font-bold py-3 rounded-xl transition-opacity hover:opacity-90 ${
+                    !file || isRecording ? "opacity-40" : ""
+                  }`}
+                >
+                  Generate Report
+                </button>
+              </div>
+
+              {/* Hint */}
+              <p className="text-center text-[#94a3b8] dark:text-[#4b5563] text-xs">
+                Minimum 5 seconds required
               </p>
             </div>
 
-            {/* Re-record button */}
-            {file && recordingSource === "mic" && !isRecording && (
-              <button
-                type="button"
-                onClick={startRecording}
-                className="w-full text-sm text-gray-400 hover:text-white border border-gray-700 hover:border-gray-600 rounded-xl py-2 transition-colors"
-              >
-                Re-record
-              </button>
-            )}
-
-            <div className="flex items-center gap-3">
-              <div className="h-px flex-1 bg-gray-800" />
-              <span className="text-gray-600 text-xs uppercase">or upload a file</span>
-              <div className="h-px flex-1 bg-gray-800" />
-            </div>
-
-            {/* File upload */}
-            <div
-              className="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center cursor-pointer hover:border-indigo-500 transition-colors"
-              onClick={() => document.getElementById("audio-input")?.click()}
-            >
-              <input
-                id="audio-input"
-                type="file"
-                accept="audio/*"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) handleFileUpload(f);
-                }}
-              />
-              {file ? (
-                <div>
-                  <p className="text-indigo-400 font-medium">{file.name}</p>
-                  <p className="text-gray-500 text-sm mt-1">{(file.size / 1024).toFixed(1)} KB</p>
-                </div>
-              ) : (
-                <div>
-                  <p className="text-gray-400">Click to select an audio file</p>
-                  <p className="text-gray-600 text-sm mt-1">mp3, wav, m4a, webm supported</p>
-                </div>
-              )}
-            </div>
-
-            {error && (
-              <div
-                className={`text-sm rounded-lg px-4 py-3 border ${
-                  errorType === "mic" || errorType === "api"
-                    ? "text-red-400 bg-red-950 border-red-800"
-                    : "text-yellow-400 bg-yellow-950 border-yellow-800"
-                }`}
-              >
-                {error}
-              </div>
-            )}
-
-            {/* Submit with disabled tooltip */}
-            <div className="relative">
-              {disabledTooltip && (
-                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-gray-300 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg z-10">
-                  {disabledTooltip}
-                  <div className="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-gray-800 rotate-45 -mt-1" />
-                </div>
-              )}
-              <button
-                type="submit"
-                disabled={!file || isRecording}
-                onClick={(e) => {
-                  if (!file || isRecording || loadingStep) {
-                    e.preventDefault();
-                    showDisabledTooltip();
-                  }
-                }}
-                className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-800 disabled:text-gray-600 text-white font-semibold py-3 rounded-xl transition-colors"
-              >
-                Generate Report
-              </button>
-            </div>
+            {/* Progress steps card (bottom) */}
           </form>
         )}
-
-        <div className="flex items-center justify-center gap-4 mt-6">
-          <Link to="/my-reports" className="text-sm text-gray-500 hover:text-gray-300 transition-colors">
-            My Reports
-          </Link>
-          <button
-            onClick={async () => { await logout(); navigate("/login"); }}
-            className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
-          >
-            Sign out
-          </button>
-        </div>
+      </div>
       </div>
     </div>
   );
