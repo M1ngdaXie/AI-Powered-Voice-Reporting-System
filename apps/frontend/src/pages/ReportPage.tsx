@@ -23,6 +23,8 @@ export default function ReportPage() {
   const [draft, setDraft] = useState<Report | null>(null);
   const [saving, setSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(state?.justGenerated ?? false);
+  const [submitted, setSubmitted] = useState(state?.report?.submitted ?? false);
+  const [submitting, setSubmitting] = useState(false);
   const [undoBanner, setUndoBanner] = useState<{ previous: ReportRecord; countdown: number } | null>(null);
   const [showTranscript, setShowTranscript] = useState(false);
   const undoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -136,6 +138,21 @@ export default function ReportPage() {
     navigate("/");
   }
 
+  async function handleSubmitReport() {
+    if (!window.confirm("Submit this report to your manager?")) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/reports/${id}/submit`, {
+        method: "PATCH",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error();
+      setSubmitted(true);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0d0d0d] text-[#1e293b] dark:text-white">
       <Navbar backTo={{ href: "/my-reports", label: "My Reports" }} />
@@ -171,6 +188,22 @@ export default function ReportPage() {
               <span className="bg-[#f0fdf4] dark:bg-[#0a1a0a] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-xs font-bold px-3 py-1 rounded-full">
                 ✓ CLEAR
               </span>
+            )}
+            {/* Submit button or Submitted badge — shown when NOT in edit mode */}
+            {!editing && (
+              submitted ? (
+                <span className="bg-[#f0fdf4] dark:bg-[#0a1a0a] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-xs font-bold px-3 py-1.5 rounded-full">
+                  ✓ Submitted
+                </span>
+              ) : (
+                <button
+                  onClick={handleSubmitReport}
+                  disabled={submitting}
+                  className="bg-[#15803d] dark:bg-[#16a34a] text-white text-sm font-bold px-4 py-2 rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
+                >
+                  {submitting ? "Submitting..." : "Submit Report"}
+                </button>
+              )
             )}
             {/* Edit button — shown when NOT in edit mode */}
             {!editing && (

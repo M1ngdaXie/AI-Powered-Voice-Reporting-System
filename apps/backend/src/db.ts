@@ -37,6 +37,12 @@ try {
   // Column already exists — safe to ignore
 }
 
+try {
+  db.run(`ALTER TABLE reports ADD COLUMN submitted INTEGER DEFAULT 0`);
+} catch {
+  // Column already exists — safe to ignore
+}
+
 db.run(`
   CREATE TABLE IF NOT EXISTS feedback (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -87,11 +93,12 @@ function parseRow(row: Record<string, unknown>) {
     blockers: JSON.parse(row.blockers as string),
     summary: row.summary,
     transcript: row.transcript,
+    submitted: (row.submitted as number) === 1,
   };
 }
 
 export function getAllReports() {
-  const rows = db.query("SELECT * FROM reports ORDER BY id DESC").all();
+  const rows = db.query("SELECT * FROM reports WHERE submitted = 1 ORDER BY id DESC").all();
   return rows.map((row) => parseRow(row as Record<string, unknown>));
 }
 
@@ -120,6 +127,11 @@ export function updateReport(
 export function getReportById(id: number) {
   const row = db.query("SELECT * FROM reports WHERE id = ?").get(id);
   return row ? parseRow(row as Record<string, unknown>) : null;
+}
+
+export function submitReport(id: number) {
+  db.run("UPDATE reports SET submitted = 1 WHERE id = ?", [id]);
+  return getReportById(id);
 }
 
 // --- Feedback ---

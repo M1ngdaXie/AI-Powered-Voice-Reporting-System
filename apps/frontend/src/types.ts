@@ -10,6 +10,7 @@ export interface ReportRecord extends Report {
   workerName: string;
   timestamp: string;
   transcript: string;
+  submitted?: boolean;
 }
 
 export interface AuthUser {

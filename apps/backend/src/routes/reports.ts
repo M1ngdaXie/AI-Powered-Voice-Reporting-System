@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { getAllReports, getReportById, updateReport, getReportsByUserId } from "../db";
+import { getAllReports, getReportById, updateReport, submitReport, getReportsByUserId } from "../db";
 import { requireRole } from "../auth";
 import type { AuthUser } from "../auth";
 
@@ -22,6 +22,16 @@ reportsRoute.get("/reports/:id", (c) => {
   if (!report) return c.json({ error: "Not found" }, 404);
   if (user.role === "worker" && report.userId !== user.userId) return c.json({ error: "Forbidden" }, 403);
   return c.json(report);
+});
+
+// PATCH /api/reports/:id/submit — worker (owner only)
+reportsRoute.patch("/reports/:id/submit", async (c) => {
+  const id = Number(c.req.param("id"));
+  const user = c.get("user") as AuthUser;
+  const existing = getReportById(id);
+  if (!existing) return c.json({ error: "Not found" }, 404);
+  if (user.role !== "worker" || existing.userId !== user.userId) return c.json({ error: "Forbidden" }, 403);
+  return c.json(submitReport(id));
 });
 
 // PUT /api/reports/:id — manager or owner

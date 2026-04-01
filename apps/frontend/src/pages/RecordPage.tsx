@@ -403,13 +403,13 @@ export default function RecordPage() {
                     !file || isRecording ? "opacity-40" : ""
                   }`}
                 >
-                  Generate Report
+                  ↑ Submit Recording
                 </button>
               </div>
 
               {/* Hint */}
               <p className="text-center text-[#94a3b8] dark:text-[#4b5563] text-xs">
-                Minimum 5 seconds required
+                Submit to generate your report · Min. 5 seconds
               </p>
             </div>
 
