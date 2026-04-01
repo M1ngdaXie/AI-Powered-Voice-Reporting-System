@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Backend (Bun)",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["--hot", "src/index.ts"],
+      "port": 3000,
+      "cwd": "/Users/xiemingda/AI-Powered-Voice-Reporting-System/apps/backend"
+    },
+    {
+      "name": "Frontend (Vite)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite"],
+      "port": 5173,
+      "cwd": "/Users/xiemingda/AI-Powered-Voice-Reporting-System/apps/frontend"
+    }
+  ]
+}
