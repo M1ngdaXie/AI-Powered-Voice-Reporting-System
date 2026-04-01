@@ -18,12 +18,6 @@ db.run(`
   )
 `);
 
-try {
-  db.run(`ALTER TABLE reports ADD COLUMN user_id INTEGER REFERENCES users(id)`);
-} catch {
-  // Column already exists — safe to ignore
-}
-
 db.run(`
   CREATE TABLE IF NOT EXISTS reports (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,6 +30,12 @@ db.run(`
     transcript TEXT NOT NULL
   )
 `);
+
+try {
+  db.run(`ALTER TABLE reports ADD COLUMN user_id INTEGER REFERENCES users(id)`);
+} catch {
+  // Column already exists — safe to ignore
+}
 
 db.run(`
   CREATE TABLE IF NOT EXISTS feedback (
@@ -198,8 +198,8 @@ export function insertUser(email: string, name: string, passwordHash: string, ro
 }
 
 export function getAllUsers() {
-  return db.query("SELECT id, email, name, role, created_at FROM users ORDER BY id ASC").all() as {
-    id: number; email: string; name: string; role: string; created_at: string;
+  return db.query("SELECT id as userId, email, name, role, created_at FROM users ORDER BY id ASC").all() as {
+    userId: number; email: string; name: string; role: string; created_at: string;
   }[];
 }
 

@@ -6,6 +6,7 @@ import {
   hasFeedbackForReport,
   getReportById,
 } from "../db";
+import { requireRole } from "../auth";
 
 export const feedbackRoute = new Hono();
 
@@ -53,7 +54,7 @@ feedbackRoute.get("/feedback/check/:reportId", (c) => {
   return c.json({ submitted: hasFeedbackForReport(reportId) });
 });
 
-feedbackRoute.get("/feedback", (c) => {
+feedbackRoute.get("/feedback", requireRole("manager"), (c) => {
   const entries = getAllFeedback();
   const summary = getFeedbackSummary();
   return c.json({ summary, entries });

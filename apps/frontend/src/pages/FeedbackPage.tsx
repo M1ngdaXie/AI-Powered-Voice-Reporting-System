@@ -33,7 +33,7 @@ export default function FeedbackPage() {
   const [filter, setFilter] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/feedback")
+    fetch("/api/feedback", { credentials: "include" })
       .then((r) => r.json())
       .then(setData)
       .finally(() => setLoading(false));

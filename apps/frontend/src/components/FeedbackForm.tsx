@@ -17,7 +17,7 @@ export default function FeedbackForm({ reportId }: Props) {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/feedback/check/${reportId}`)
+    fetch(`/api/feedback/check/${reportId}`, { credentials: "include" })
       .then((r) => r.json())
       .then((data) => {
         if (data.submitted) setSubmitted(true);
@@ -33,6 +33,7 @@ export default function FeedbackForm({ reportId }: Props) {
     try {
       const res = await fetch("/api/feedback", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reportId, accurate, easier, comment }),
       });

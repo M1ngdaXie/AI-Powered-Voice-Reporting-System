@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import OpenAI from "openai";
 import { insertReport } from "../db";
+import { requireRole } from "../auth";
 
 export const transcribeRoute = new Hono();
 
@@ -8,10 +9,12 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB — Whisper's limit
 
-transcribeRoute.post("/transcribe", async (c) => {
+transcribeRoute.post("/transcribe", requireRole("worker"), async (c) => {
   const formData = await c.req.formData();
   const file = formData.get("audio") as File | null;
-  const workerName = (formData.get("workerName") as string) || "Anonymous";
+  const user = c.get("user") as import("../auth").AuthUser;
+  const workerName = user.name;
+  const userId = user.userId;
 
   if (!file) {
     return c.json({ error: "No audio file provided" }, 400);
@@ -85,6 +88,7 @@ Only include items actually mentioned. Use empty arrays if nothing applies. Retu
 
   const reportId = insertReport(
     workerName,
+    userId,
     report.tasksCompleted,
     report.tasksInProgress,
     report.blockers,

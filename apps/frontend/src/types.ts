@@ -11,3 +11,14 @@ export interface ReportRecord extends Report {
   timestamp: string;
   transcript: string;
 }
+
+export interface AuthUser {
+  userId: number;
+  name: string;
+  role: "worker" | "manager";
+}
+
+export type AuthState =
+  | { status: "loading" }
+  | ({ status: "authenticated" } & AuthUser)
+  | { status: "unauthenticated" };

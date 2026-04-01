@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AudioWaveform from "../components/AudioWaveform";
 import ProgressSteps from "../components/ProgressSteps";
 import HelpModal from "../components/HelpModal";
+import { useAuth } from "../context/AuthContext";
 
 type LoadingStep = "uploading" | "transcribing" | "structuring" | "done";
 type ErrorType = "validation" | "mic" | "api" | "size" | null;
@@ -21,12 +22,12 @@ function getMicDenialHelp(): string {
 }
 
 export default function RecordPage() {
+  const { auth, logout } = useAuth();
   const [file, setFile] = useState<File | null>(null);
   const [recordingSource, setRecordingSource] = useState<"mic" | "upload" | null>(null);
-  const [workerName, setWorkerName] = useState("");
+  const workerName = auth.status === "authenticated" ? auth.name : "";
   const [error, setError] = useState<string | null>(null);
   const [errorType, setErrorType] = useState<ErrorType>(null);
-  const [nameError, setNameError] = useState<string | null>(null);
   const [disabledTooltip, setDisabledTooltip] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
@@ -184,12 +185,6 @@ export default function RecordPage() {
     e.preventDefault();
     if (!file || loadingStep) return;
 
-    // Name validation
-    if (!workerName.trim()) {
-      setNameError("Please enter your name");
-      return;
-    }
-
     // MIME type validation
     if (file.type && !file.type.startsWith("audio/")) {
       setErrorWithType("Please select an audio file (mp3, wav, m4a, webm).", "validation");
@@ -213,10 +208,10 @@ export default function RecordPage() {
     try {
       const formData = new FormData();
       formData.append("audio", file);
-      formData.append("workerName", workerName.trim() || "Anonymous");
 
       const res = await fetch("/api/transcribe", {
         method: "POST",
+        credentials: "include",
         body: formData,
       });
 
@@ -259,7 +254,10 @@ export default function RecordPage() {
             ?
           </button>
         </div>
-        <p className="text-gray-400 mb-8">Record or upload audio and we'll generate your report.</p>
+        <div className="flex items-center justify-between mb-8">
+          <p className="text-gray-400">Record or upload audio and we'll generate your report.</p>
+          {workerName && <span className="text-sm text-gray-400">{workerName}</span>}
+        </div>
 
         <HelpModal open={showHelp} onClose={() => setShowHelp(false)} />
 
@@ -272,26 +270,6 @@ export default function RecordPage() {
 
         {!loadingStep && (
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <input
-                type="text"
-                placeholder="Your name"
-                value={workerName}
-                onChange={(e) => {
-                  setWorkerName(e.target.value);
-                  if (nameError) setNameError(null);
-                }}
-                className={`w-full bg-gray-900 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none transition-colors ${
-                  nameError
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-gray-700 focus:border-indigo-500"
-                }`}
-              />
-              {nameError && (
-                <p className="text-red-400 text-xs mt-1.5 ml-1">{nameError}</p>
-              )}
-            </div>
-
             {/* Onboarding tooltip */}
             {showOnboarding && (
               <div className="relative bg-indigo-600 text-white rounded-xl p-4 shadow-xl">
@@ -425,12 +403,17 @@ export default function RecordPage() {
           </form>
         )}
 
-        <Link
-          to="/manager"
-          className="block text-center text-gray-500 hover:text-gray-300 text-sm mt-6 transition-colors"
-        >
-          Manager View →
-        </Link>
+        <div className="flex items-center justify-center gap-4 mt-6">
+          <Link to="/my-reports" className="text-sm text-gray-500 hover:text-gray-300 transition-colors">
+            My Reports
+          </Link>
+          <button
+            onClick={async () => { await logout(); navigate("/login"); }}
+            className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+          >
+            Sign out
+          </button>
+        </div>
       </div>
     </div>
   );

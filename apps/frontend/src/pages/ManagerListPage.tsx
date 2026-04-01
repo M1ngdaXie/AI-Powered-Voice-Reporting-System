@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { ReportRecord } from "../types";
+import { useAuth } from "../context/AuthContext";
 
 const AVATAR_COLORS = [
   "bg-indigo-600", "bg-emerald-600", "bg-amber-600", "bg-rose-600",
@@ -14,12 +15,13 @@ function getAvatarColor(name: string) {
 }
 
 export default function ManagerListPage() {
+  const { logout } = useAuth();
   const [reports, setReports] = useState<ReportRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/reports")
+    fetch("/api/reports", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => setReports(data))
       .finally(() => setLoading(false));
@@ -37,12 +39,15 @@ export default function ManagerListPage() {
             >
               Feedback
             </Link>
-            <Link
-              to="/"
-              className="text-gray-400 hover:text-white text-sm transition-colors"
-            >
-              ← Worker View
+            <Link to="/admin/users" className="text-sm text-gray-400 hover:text-white transition-colors">
+              Manage Users
             </Link>
+            <button
+              onClick={async () => { await logout(); navigate("/login"); }}
+              className="text-sm text-gray-400 hover:text-white transition-colors"
+            >
+              Sign out
+            </button>
           </div>
         </div>
 

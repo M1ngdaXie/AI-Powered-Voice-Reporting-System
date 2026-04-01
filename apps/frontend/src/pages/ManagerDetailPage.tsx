@@ -11,7 +11,7 @@ export default function ManagerDetailPage() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/reports/${id}`)
+    fetch(`/api/reports/${id}`, { credentials: "include" })
       .then((res) => {
         if (!res.ok) throw new Error();
         return res.json();

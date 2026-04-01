@@ -88,6 +88,7 @@ export default function ReportPage() {
       };
       const res = await fetch(`/api/reports/${id}`, {
         method: "PUT",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cleaned),
       });
@@ -121,6 +122,7 @@ export default function ReportPage() {
 
     await fetch(`/api/reports/${id}`, {
       method: "PUT",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(prev),
     });
