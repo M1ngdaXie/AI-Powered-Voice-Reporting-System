@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import OpenAI from "openai";
-import { insertReport } from "../db";
+import { insertReport, getReportById } from "../db";
 import { requireRole } from "../auth";
 
 export const transcribeRoute = new Hono();
@@ -96,5 +96,5 @@ Only include items actually mentioned. Use empty arrays if nothing applies. Retu
     rawText,
   );
 
-  return c.json({ id: reportId, transcript: rawText, report });
+  return c.json({ id: reportId, transcript: rawText, report: getReportById(reportId) });
 });
