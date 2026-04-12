@@ -8,10 +8,17 @@ import { adminRoute } from "./routes/admin";
 import { jobsRoute } from "./routes/jobs";
 import { authMiddleware, hashPassword } from "./auth";
 import { getUserByEmail, insertUser } from "./db";
+import { rateLimit } from "./rateLimit";
 
 const app = new Hono();
 
 app.use("*", cors({ origin: "http://localhost:5173", credentials: true }));
+
+// Rate limit auth endpoints by IP — user is not authenticated yet
+const byIp = (c: { req: { header: (k: string) => string | undefined } }) =>
+  c.req.header("x-forwarded-for") ?? "local";
+app.use("/api/auth/login",    rateLimit(10, 60, byIp));  // 10 attempts/min per IP
+app.use("/api/auth/register", rateLimit(5,  60, byIp));  // 5 registrations/min per IP
 
 // Public auth routes — mounted BEFORE the authMiddleware below.
 // Hono resolves routes before middleware registered after them, so /api/auth/*
@@ -21,6 +28,12 @@ app.route("/api", authRoute);
 
 // All other /api/* routes require a valid JWT cookie.
 app.use("/api/*", authMiddleware);
+
+// Rate limits (applied after auth so we can key by userId)
+app.use("/api/transcribe", rateLimit(20, 60));  // 20 uploads/min per user
+app.use("/api/feedback",   rateLimit(10, 60));  // 10 feedback/min per user
+app.use("/api/reports/*",  rateLimit(60, 60));  // 60 reads/min per user
+
 app.route("/api", transcribeRoute);
 app.route("/api", reportsRoute);
 app.route("/api", feedbackRoute);

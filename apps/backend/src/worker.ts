@@ -5,7 +5,11 @@ import type { TranscriptionJobData } from "./queue";
 import { downloadAudio } from "./r2";
 import { updateReportAfterProcessing, setReportFailed } from "./db";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  timeout: 120_000,  // 2 min — enough for long audio, won't hang forever
+  maxRetries: 0,     // BullMQ handles retries, don't double-retry
+});
 
 async function structureReport(rawText: string) {
   const fallback = {
