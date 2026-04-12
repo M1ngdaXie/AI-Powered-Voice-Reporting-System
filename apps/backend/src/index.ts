@@ -5,6 +5,7 @@ import { reportsRoute } from "./routes/reports";
 import { feedbackRoute } from "./routes/feedback";
 import { authRoute } from "./routes/auth";
 import { adminRoute } from "./routes/admin";
+import { jobsRoute } from "./routes/jobs";
 import { authMiddleware, hashPassword } from "./auth";
 import { getUserByEmail, insertUser } from "./db";
 
@@ -24,6 +25,7 @@ app.route("/api", transcribeRoute);
 app.route("/api", reportsRoute);
 app.route("/api", feedbackRoute);
 app.route("/api", adminRoute);
+app.route("/api", jobsRoute);
 
 app.get("/health", (c) => c.json({ status: "ok" }));
 
@@ -35,10 +37,10 @@ async function seedAdmin() {
     console.log("No ADMIN_EMAIL/ADMIN_PASSWORD in .env — skipping admin seed");
     return;
   }
-  const existing = getUserByEmail(email);
+  const existing = await getUserByEmail(email);
   if (existing) { console.log("Admin account already exists"); return; }
   const hash = await hashPassword(password);
-  insertUser(email, name, hash, "manager");
+  await insertUser(email, name, hash, "manager");
   console.log(`Admin seeded: ${email}`);
 }
 

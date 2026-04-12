@@ -26,10 +26,10 @@ authRoute.post("/auth/register", async (c) => {
   if (password.length < 8)
     return c.json({ error: "Password must be at least 8 characters" }, 400);
   if (!name.trim()) return c.json({ error: "Name cannot be empty" }, 400);
-  const existing = getUserByEmail(email);
+  const existing = await getUserByEmail(email);
   if (existing) return c.json({ error: "Email already registered" }, 409);
   const hash = await hashPassword(password);
-  const userId = insertUser(email, name.trim(), hash, "worker");
+  const userId = await insertUser(email, name.trim(), hash, "worker");
   const token = await signToken({ userId, role: "worker", name: name.trim() });
   setAuthCookie(c, token);
   return c.json({ userId, name: name.trim(), role: "worker" }, 201);
@@ -45,7 +45,7 @@ authRoute.post("/auth/login", async (c) => {
   const { email, password } = body;
   if (!email || !password)
     return c.json({ error: "Invalid email or password" }, 401);
-  const user = getUserByEmail(email);
+  const user = await getUserByEmail(email);
   if (!user) return c.json({ error: "Invalid email or password" }, 401);
   const valid = await verifyPassword(password, user.password_hash);
   if (!valid) return c.json({ error: "Invalid email or password" }, 401);

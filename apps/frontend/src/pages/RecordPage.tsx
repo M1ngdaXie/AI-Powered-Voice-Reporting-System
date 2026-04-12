@@ -201,15 +201,11 @@ export default function RecordPage() {
     clearError();
     setLoadingStep("uploading");
 
-    // Simulated progress steps
-    const t1 = setTimeout(() => setLoadingStep("transcribing"), 1500);
-    const t2 = setTimeout(() => setLoadingStep("structuring"), 4000);
-    stepTimersRef.current = [t1, t2];
-
     try {
       const formData = new FormData();
       formData.append("audio", file);
 
+      // Step 1: Upload file and enqueue job (returns immediately with jobId)
       const res = await fetch("/api/transcribe", {
         method: "POST",
         credentials: "include",
@@ -217,20 +213,55 @@ export default function RecordPage() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
+        const data = await res.json() as { error?: string };
         throw new Error(data.error ?? "Something went wrong");
       }
 
-      const data = await res.json();
+      const { jobId } = await res.json() as { jobId: string; reportId: number };
 
-      // Clear simulated timers and show done
-      stepTimersRef.current.forEach(clearTimeout);
-      setLoadingStep("done");
+      // Step 2: Poll /api/jobs/:jobId until done or failed
+      setLoadingStep("transcribing");
 
-      // Navigate after brief "done" display
-      setTimeout(() => {
-        navigate("/report", { state: { ...data, justGenerated: true } });
-      }, 800);
+      const POLL_INTERVAL = 2500;
+      const MAX_POLLS = 60; // 60 × 2.5s = 2.5 min timeout
+
+      for (let i = 0; i < MAX_POLLS; i++) {
+        await new Promise((r) => setTimeout(r, POLL_INTERVAL));
+
+        const pollRes = await fetch(`/api/jobs/${jobId}`, { credentials: "include" });
+        if (!pollRes.ok) continue;
+
+        const pollData = await pollRes.json() as {
+          status: "processing" | "done" | "failed";
+          reportId?: number;
+          report?: { transcript?: string; [key: string]: unknown };
+          error?: string;
+        };
+
+        if (pollData.status === "done") {
+          setLoadingStep("done");
+          setTimeout(() => {
+            navigate("/report", {
+              state: {
+                id: pollData.reportId,
+                transcript: pollData.report?.transcript ?? "",
+                report: pollData.report,
+                justGenerated: true,
+              },
+            });
+          }, 800);
+          return;
+        }
+
+        if (pollData.status === "failed") {
+          throw new Error(pollData.error ?? "Processing failed. Please try again.");
+        }
+
+        // Still processing — switch to structuring step around halfway
+        if (i === Math.floor(MAX_POLLS / 3)) setLoadingStep("structuring");
+      }
+
+      throw new Error("Processing timed out. Please try again.");
     } catch (err) {
       stepTimersRef.current.forEach(clearTimeout);
       setLoadingStep(null);

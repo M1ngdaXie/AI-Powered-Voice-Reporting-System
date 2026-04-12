@@ -36,26 +36,25 @@ feedbackRoute.post("/feedback", async (c) => {
 
   const comment = (body.comment ?? "").slice(0, MAX_COMMENT_LENGTH);
 
-  const report = getReportById(body.reportId);
+  const report = await getReportById(body.reportId);
   if (!report) {
     return c.json({ error: "Report not found" }, 404);
   }
 
-  if (hasFeedbackForReport(body.reportId)) {
+  if (await hasFeedbackForReport(body.reportId)) {
     return c.json({ error: "Feedback already submitted for this report" }, 409);
   }
 
-  const id = insertFeedback(body.reportId, body.accurate, body.easier, comment);
+  const id = await insertFeedback(body.reportId, body.accurate, body.easier, comment);
   return c.json({ id }, 201);
 });
 
-feedbackRoute.get("/feedback/check/:reportId", (c) => {
+feedbackRoute.get("/feedback/check/:reportId", async (c) => {
   const reportId = Number(c.req.param("reportId"));
-  return c.json({ submitted: hasFeedbackForReport(reportId) });
+  return c.json({ submitted: await hasFeedbackForReport(reportId) });
 });
 
-feedbackRoute.get("/feedback", requireRole("manager"), (c) => {
-  const entries = getAllFeedback();
-  const summary = getFeedbackSummary();
+feedbackRoute.get("/feedback", requireRole("manager"), async (c) => {
+  const [entries, summary] = await Promise.all([getAllFeedback(), getFeedbackSummary()]);
   return c.json({ summary, entries });
 });
