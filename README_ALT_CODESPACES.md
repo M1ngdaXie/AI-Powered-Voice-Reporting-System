@@ -40,7 +40,7 @@
     ```bash
     nano .env
     ```
-11. Paste the following and fill in your values (see SETUP.md for details on each variable):
+11. Paste the following and fill in your values (see other README.md for more details):
     ```
     OPENAI_API_KEY=your-openai-key-here
     JWT_SECRET=supersecret-change-in-production
