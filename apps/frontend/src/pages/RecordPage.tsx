@@ -276,7 +276,7 @@ export default function RecordPage() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0d0d0d] text-[#1e293b] dark:text-white">
-      <Navbar showMyReports showSignOut />
+      <Navbar backTo={{ href: "/", label: "Home" }} showMyReports showSignOut />
       <div className="flex flex-col items-center px-6 pb-6">
       <div className="w-full max-w-md">
 

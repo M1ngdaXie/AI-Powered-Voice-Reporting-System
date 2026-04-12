@@ -50,9 +50,9 @@ export default function Navbar({ backTo, links = [], showSignOut, showMyReports 
               <div className="w-7 h-7 rounded-lg bg-[#4f46e5] dark:bg-gradient-to-br dark:from-[#8b5cf6] dark:to-[#3b82f6] flex items-center justify-center text-sm flex-shrink-0">
                 🎙️
               </div>
-              <span className="font-extrabold text-sm text-[#1e293b] dark:bg-gradient-to-r dark:from-[#a78bfa] dark:to-[#60a5fa] dark:bg-clip-text dark:text-transparent whitespace-nowrap">
+              <Link to="/" className="font-extrabold text-sm text-[#1e293b] dark:bg-gradient-to-r dark:from-[#a78bfa] dark:to-[#60a5fa] dark:bg-clip-text dark:text-transparent whitespace-nowrap">
                 VoiceReport
-              </span>
+              </Link>
             </div>
           )}
         </div>

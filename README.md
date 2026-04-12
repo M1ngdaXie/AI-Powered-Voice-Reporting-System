@@ -1,4 +1,6 @@
-# AI-Powered Voice Reporting System (Phase 1)
+# AI-Powered Voice Reporting System
+
+> Turn employee voice updates into structured, professional reports automatically.
 
 ## Team Members
 - Henny Guiesso
@@ -6,15 +8,211 @@
 - Yuting Wan
 - Mingda Xie
 
-## Project Description
-Our project aims to solve the inefficiency of manual work reporting in fast-paced professional environments. We are designing an AI-driven system that allows employees to record "stream-of-consciousness" voice updates, which are then automatically transcribed, filtered for verbal clutter, and reformatted into structured, professional documentation for managers.
+---
 
-## Current Project Phase
-**Phase 1: Research & Planning**
-*Status: Initial project scope, user research planning, and technical foundation definition.*
+## What It Does
 
-## Technical Foundation (Preview)
-- **Runtime:** Bun.js (TypeScript)
-- **AI Models:** OpenAI Whisper (STT) & GPT-4o (Reasoning)
-- **Storage:** S3-compatible Object Storage (Cloudflare R2) & PostgreSQL
-- **Infrastructure:** Redis/BullMQ for asynchronous task processing
+Employees record a "stream-of-consciousness" voice update describing what they completed, what they're working on, and any blockers. The system automatically:
+
+1. Uploads the audio to cloud storage (Cloudflare R2)
+2. Transcribes it using OpenAI Whisper
+3. Structures it into a professional report using GPT-4o
+4. Stores the report in a cloud database (PostgreSQL)
+5. Makes it available to managers in a real-time dashboard
+
+The transcription happens asynchronously via a background job queue (BullMQ + Redis), so the UI responds instantly and never blocks on AI processing.
+
+---
+
+## Architecture
+
+```
+Frontend (React + Vite)
+    │
+    │  POST /api/transcribe  →  202 Accepted + jobId
+    │  GET  /api/jobs/:jobId →  polls every 2.5s
+    │
+Backend (Bun + Hono)
+    │
+    ├── Cloudflare R2      (audio file storage)
+    ├── Neon PostgreSQL     (users, reports, feedback)
+    ├── Upstash Redis       (BullMQ job queue)
+    │
+    └── Worker Process
+            ├── OpenAI Whisper   (speech → text)
+            └── OpenAI GPT-4o    (text → structured report)
+```
+
+**Key design decision — async queue:** Without BullMQ, 10 simultaneous uploads would each hold an HTTP connection open for 10–30s waiting for AI. With BullMQ, all 10 get an instant `202 Accepted`, jobs queue in Redis, and the worker processes 3 at a time. The frontend polls for completion independently.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 19, Vite, Tailwind CSS v4 |
+| Backend | Bun.js, Hono, TypeScript |
+| Database | PostgreSQL (Neon serverless) |
+| Audio storage | Cloudflare R2 (S3-compatible) |
+| Job queue | BullMQ + Upstash Redis |
+| AI — transcription | OpenAI Whisper |
+| AI — structuring | OpenAI GPT-4o |
+
+---
+
+## Prerequisites
+
+- [Bun](https://bun.sh) v1.0+
+- Accounts for: [Neon](https://neon.tech), [Cloudflare R2](https://developers.cloudflare.com/r2/), [Upstash Redis](https://upstash.com), [OpenAI](https://platform.openai.com)
+
+---
+
+## Local Setup
+
+### 1. Clone and install dependencies
+
+```bash
+git clone <repo-url>
+cd AI-Powered-Voice-Reporting-System
+
+cd apps/backend && bun install
+cd ../frontend && bun install
+```
+
+### 2. Configure backend environment
+
+```bash
+cd apps/backend
+cp .env.example .env
+```
+
+Fill in `.env` with your credentials (see `.env.example` for all required fields):
+
+| Variable | Where to get it |
+|----------|----------------|
+| `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com/api-keys) |
+| `DATABASE_URL` | Neon project → Connection string |
+| `R2_ENDPOINT` / `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` | Cloudflare R2 → API tokens |
+| `R2_BUCKET` | Name of your R2 bucket (e.g. `voice-reports-audio`) |
+| `REDIS_URL` | Upstash Redis → REST URL (use the `rediss://` URL) |
+| `JWT_SECRET` | Any random string |
+
+### 3. Start the backend (API server + background worker)
+
+```bash
+cd apps/backend
+bun run dev:all
+```
+
+This starts two processes in parallel:
+- **API server** on `http://localhost:3000`
+- **Transcription worker** — processes BullMQ jobs in the background
+
+You should see:
+```
+dev    | Backend running on http://localhost:3000
+worker | Transcription worker started
+dev    | Admin seeded: admin@example.com
+```
+
+### 4. Start the frontend
+
+In a separate terminal:
+
+```bash
+cd apps/frontend
+bun run dev
+```
+
+Open `http://localhost:5173`
+
+---
+
+## Default Accounts
+
+The backend seeds a manager account on first start:
+
+| Role | Email | Password |
+|------|-------|----------|
+| Manager | admin@example.com | admin1234 |
+
+Register worker accounts via the `/register` page.
+
+---
+
+## User Flows
+
+### Worker
+1. Go to `/` → record via mic or upload an audio file
+2. Click **Submit Recording** → instant response, report generates in background
+3. View the structured report → edit if needed → click **Submit Report**
+4. View all past reports at `/my-reports`
+
+### Manager
+1. Log in → redirected to `/manager` dashboard
+2. Browse all submitted reports, click any to see full details + transcript
+3. View AI feedback analytics at `/feedback`
+4. Manage user roles at `/admin/users`
+
+---
+
+## Running the Tests
+
+End-to-end pipeline test (requires an audio file):
+
+```bash
+cd apps/backend
+bun test/test-voice.ts test/test.m4a
+```
+
+Covers: login → upload → transcription → GPT-4o structuring → submit report → feedback → manager view.
+
+Peak concurrency test (verifies BullMQ queue behavior under load):
+
+```bash
+bun test/test-peak.ts test/test.m4a 6
+```
+
+Fires 6 simultaneous uploads. With `concurrency: 3` configured in the worker, the first 3 process immediately and the remaining 3 queue — confirming the system handles peak load without blocking or dropping jobs.
+
+---
+
+## Project Structure
+
+```
+apps/
+├── backend/
+│   ├── src/
+│   │   ├── index.ts          # Hono app entry point
+│   │   ├── worker.ts         # BullMQ background worker (Whisper + GPT-4o)
+│   │   ├── db.ts             # PostgreSQL queries (postgres.js)
+│   │   ├── auth.ts           # JWT middleware + RBAC (worker/manager roles)
+│   │   ├── r2.ts             # Cloudflare R2 upload/download
+│   │   ├── queue.ts          # BullMQ queue + Redis connection
+│   │   ├── schema.sql        # PostgreSQL schema
+│   │   └── routes/
+│   │       ├── transcribe.ts # POST /api/transcribe
+│   │       ├── reports.ts    # GET/PUT/PATCH /api/reports
+│   │       ├── jobs.ts       # GET /api/jobs/:jobId (polling endpoint)
+│   │       ├── feedback.ts   # POST /api/feedback
+│   │       ├── auth.ts       # POST /api/auth/login|register|logout
+│   │       └── admin.ts      # PUT /api/admin/users/:id/role
+│   ├── test/
+│   │   ├── test-voice.ts     # Full pipeline E2E test
+│   │   └── test-peak.ts      # Concurrency load test
+│   └── .env.example          # Required environment variables
+└── frontend/
+    └── src/
+        ├── pages/
+        │   ├── RecordPage.tsx        # Worker: record + upload
+        │   ├── ReportPage.tsx        # Worker: view + edit report
+        │   ├── MyReportsPage.tsx     # Worker: report history
+        │   ├── ManagerListPage.tsx   # Manager: all submitted reports
+        │   ├── ManagerDetailPage.tsx # Manager: report detail view
+        │   ├── FeedbackPage.tsx      # Manager: feedback analytics
+        │   └── AdminUsersPage.tsx    # Manager: user role management
+        └── context/
+            ├── AuthContext.tsx       # JWT auth state
+            └── ThemeContext.tsx      # Light/dark theme
+```
