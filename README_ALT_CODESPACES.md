@@ -164,8 +164,6 @@ Fill in `.env` with your credentials (see `.env.example` for all required fields
    bun run dev
    ```
 4. Open the browser link that appears in the frontend terminal
-
-```
 ---
 
 ## Default Accounts
@@ -254,4 +252,5 @@ apps/
         └── context/
             ├── AuthContext.tsx       # JWT auth state
             └── ThemeContext.tsx      # Light/dark theme
+---
 ```
