@@ -67,7 +67,7 @@ export default function ManagerDetailPage() {
               {report.workerName}
             </h2>
             <p className="text-[#64748b] dark:text-[#9ca3af] text-sm">
-              {new Date(report.timestamp + "Z").toLocaleString()}
+              {new Date(report.timestamp).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {new Date(report.timestamp).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
             </p>
           </div>
           <div className="flex-shrink-0">
