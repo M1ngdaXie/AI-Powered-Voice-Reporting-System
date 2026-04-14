@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { MessageCircle } from "lucide-react";
 
 interface Props {
   reportId: number;
@@ -62,7 +63,7 @@ export default function FeedbackForm({ reportId }: Props) {
   return (
     <div className="bg-white dark:bg-[#161616] border border-[#e2e8f0] dark:border-[#2a2a2a] rounded-xl p-5">
       <div className="flex items-center gap-2 mb-4">
-        <span>💬</span>
+        <MessageCircle size={14} className="text-[#64748b] dark:text-[#9ca3af]" />
         <span className="text-[#64748b] dark:text-[#9ca3af] text-xs font-bold uppercase tracking-widest">Feedback</span>
       </div>
 

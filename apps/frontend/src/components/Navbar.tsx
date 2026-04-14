@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { avatarColor, initials } from "../utils/avatar";
+import { Mic2, ClipboardList, Sun, Moon } from "lucide-react";
 
 interface NavbarProps {
   /** If set, shows a back link instead of the logo on the left */
@@ -47,8 +48,8 @@ export default function Navbar({ backTo, links = [], showSignOut, showMyReports 
             </Link>
           ) : (
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[#4f46e5] dark:bg-gradient-to-br dark:from-[#8b5cf6] dark:to-[#3b82f6] flex items-center justify-center text-sm flex-shrink-0">
-                🎙️
+              <div className="w-7 h-7 rounded-lg bg-[#4f46e5] dark:bg-gradient-to-br dark:from-[#8b5cf6] dark:to-[#3b82f6] flex items-center justify-center text-white flex-shrink-0">
+                <Mic2 size={14} />
               </div>
               <Link to="/" className="font-extrabold text-sm text-[#1e293b] dark:bg-gradient-to-r dark:from-[#a78bfa] dark:to-[#60a5fa] dark:bg-clip-text dark:text-transparent whitespace-nowrap">
                 VoiceReport
@@ -74,9 +75,9 @@ export default function Navbar({ backTo, links = [], showSignOut, showMyReports 
             <Link
               to="/my-reports"
               title="My Reports"
-              className="w-7 h-7 rounded-lg bg-[#f1f5f9] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#333] flex items-center justify-center text-sm hover:opacity-80 transition-opacity flex-shrink-0"
+              className="w-7 h-7 rounded-lg bg-[#f1f5f9] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#333] flex items-center justify-center text-[#64748b] dark:text-[#9ca3af] hover:opacity-80 transition-opacity shrink-0"
             >
-              📋
+              <ClipboardList size={14} />
             </Link>
           )}
 
@@ -95,7 +96,7 @@ export default function Navbar({ backTo, links = [], showSignOut, showMyReports 
             className="w-7 h-7 rounded-lg bg-[#f1f5f9] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#333] flex items-center justify-center text-sm hover:opacity-80 transition-opacity flex-shrink-0"
             title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           >
-            {theme === "dark" ? "☀️" : "🌙"}
+            {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
           </button>
 
           {/* Avatar with dropdown — shown when authenticated */}

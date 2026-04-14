@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { ArrowUp, Mic2, Square } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AudioWaveform from "../components/AudioWaveform";
-import ProgressSteps from "../components/ProgressSteps";
 import HelpModal from "../components/HelpModal";
 import Navbar from "../components/Navbar";
+import ProgressSteps from "../components/ProgressSteps";
 import { useAuth } from "../context/AuthContext";
 
 type LoadingStep = "uploading" | "transcribing" | "structuring" | "done";
@@ -320,9 +321,9 @@ export default function RecordPage() {
             )}
 
             {/* Main record card */}
-            <div className="bg-white dark:bg-[#161616] border border-[#e2e8f0] dark:border-[#8b5cf6]/20 rounded-2xl p-8 flex flex-col items-center gap-5 shadow-[0_4px_16px_rgba(79,70,229,0.08)] dark:shadow-none relative overflow-hidden">
+            <div className="bg-white dark:bg-[#161616] border border-[#e2e8f0] dark:border-[#8b5cf6]/20 rounded-2xl p-8 flex flex-col items-center gap-5 shadow-[0_4px_16px_rgba(79,70,229,0.08)] dark:shadow-none relative">
               {/* Gradient top bar */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#8b5cf6] to-[#3b82f6]" />
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#8b5cf6] to-[#3b82f6] rounded-t-2xl" />
 
               {/* "NEW UPDATE" label */}
               <span className="text-[10px] font-bold uppercase tracking-[.1em] text-[#4f46e5] dark:text-[#8b5cf6]">
@@ -333,7 +334,7 @@ export default function RecordPage() {
               <div className="relative group flex flex-col items-center">
                 <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block z-10 pointer-events-none">
                   <div className="bg-[#1e293b] dark:bg-[#e2e8f0] text-white dark:text-[#1e293b] text-xs px-3 py-1.5 rounded-lg shadow-lg text-center max-w-50 whitespace-normal">
-                    {isRecording ? "Tap to stop recording" : "Tap to record your work update — we'll transcribe it automatically"}
+                    {isRecording ? "Tap to stop recording" : "Tap to record your work update"}
                   </div>
                   <div className="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-[#1e293b] dark:bg-[#e2e8f0] rotate-45 -mt-1" />
                 </div>
@@ -346,7 +347,7 @@ export default function RecordPage() {
                       : "bg-[#4f46e5] dark:bg-gradient-to-br dark:from-[#8b5cf6] dark:to-[#3b82f6] shadow-[0_8px_24px_rgba(79,70,229,0.35)] dark:shadow-[0_0_24px_rgba(139,92,246,0.4)] hover:opacity-90"
                   }`}
                 >
-                  {isRecording ? "⏹️" : "🎙️"}
+                  {isRecording ? <Square size={22} fill="currentColor" /> : <Mic2 size={22} />}
                 </button>
               </div>
 
@@ -439,11 +440,11 @@ export default function RecordPage() {
                       showDisabledTooltip();
                     }
                   }}
-                  className={`w-full bg-[#4f46e5] dark:bg-gradient-to-r dark:from-[#8b5cf6] dark:to-[#3b82f6] text-white font-bold py-3 rounded-xl transition-opacity hover:opacity-90 ${
+                  className={`inline-flex items-center justify-center gap-2 w-full bg-[#4f46e5] dark:bg-gradient-to-r dark:from-[#8b5cf6] dark:to-[#3b82f6] text-white font-bold py-3 rounded-xl transition-opacity hover:opacity-90 ${
                     !file || isRecording ? "opacity-40" : ""
                   }`}
                 >
-                  ↑ Submit Recording
+                  <ArrowUp size={16} /> Submit Recording
                 </button>
               </div>
 

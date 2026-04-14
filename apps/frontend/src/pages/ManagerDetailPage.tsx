@@ -4,6 +4,7 @@ import Section from "../components/Section";
 import Navbar from "../components/Navbar";
 import { avatarColor, initials } from "../utils/avatar";
 import type { ReportRecord } from "../types";
+import { Ban, Check, FileText } from "lucide-react";
 
 export default function ManagerDetailPage() {
   const { id } = useParams();
@@ -71,12 +72,12 @@ export default function ManagerDetailPage() {
           </div>
           <div className="flex-shrink-0">
             {hasBlockers ? (
-              <span className="bg-[#fef2f2] dark:bg-[#160808] border border-[#fecaca] dark:border-[#ef444440] text-[#dc2626] dark:text-[#f87171] text-xs font-semibold px-2.5 py-1 rounded-full">
-                🚫 BLOCKED
+              <span className="inline-flex items-center gap-1 bg-[#fef2f2] dark:bg-[#160808] border border-[#fecaca] dark:border-[#ef444440] text-[#dc2626] dark:text-[#f87171] text-xs font-semibold px-2.5 py-1 rounded-full">
+                <Ban size={11} /> BLOCKED
               </span>
             ) : (
-              <span className="bg-[#f0fdf4] dark:bg-[#0a1a0a] border border-[#bbf7d0] dark:border-[#16a34a40] text-[#15803d] dark:text-[#4ade80] text-xs font-semibold px-2.5 py-1 rounded-full">
-                ✓ CLEAR
+              <span className="inline-flex items-center gap-1 bg-[#f0fdf4] dark:bg-[#0a1a0a] border border-[#bbf7d0] dark:border-[#16a34a40] text-[#15803d] dark:text-[#4ade80] text-xs font-semibold px-2.5 py-1 rounded-full">
+                <Check size={11} /> CLEAR
               </span>
             )}
           </div>
@@ -125,7 +126,7 @@ export default function ManagerDetailPage() {
             className="w-full px-4 py-3 flex items-center justify-between hover:bg-[#f8fafc] dark:hover:bg-[#1f1f1f] transition-colors"
           >
             <div className="flex items-center gap-2">
-              <span className="text-sm">📄</span>
+              <FileText size={14} className="text-[#64748b] dark:text-[#9ca3af]" />
               <span className="text-[#64748b] dark:text-[#9ca3af] text-sm font-medium">Raw Transcript</span>
             </div>
             <span className="text-[#94a3b8] dark:text-[#6b7280] text-xs">

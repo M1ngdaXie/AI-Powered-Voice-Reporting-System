@@ -1,30 +1,32 @@
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
+import { Mic2, Upload, Bot, Pencil, Send, Mail, Clock } from "lucide-react";
+import type { ReactNode } from "react";
 
-const HOW_IT_WORKS = [
+const HOW_IT_WORKS: { icon: ReactNode; title: string; desc: string }[] = [
   {
-    icon: "🎙️",
+    icon: <Mic2 size={16} />,
     title: "Record your update",
     desc: "Tap the mic button on the home screen to start recording. Speak naturally about what you completed, what you're working on, and any blockers. Minimum 5 seconds.",
   },
   {
-    icon: "📤",
+    icon: <Upload size={16} />,
     title: "Submit your recording",
     desc: "When finished, tap the mic again to stop, then click \"Submit Recording\". You can also upload an audio file (mp3, wav, m4a, webm) instead of recording live.",
   },
   {
-    icon: "🤖",
+    icon: <Bot size={16} />,
     title: "AI structures your report",
     desc: "Our AI transcribes your audio and automatically organises it into three sections: Tasks Completed, In Progress, and Blockers — plus a summary.",
   },
   {
-    icon: "✏️",
+    icon: <Pencil size={16} />,
     title: "Review and edit",
     desc: "Check the generated report. If anything was misheard or needs adjusting, click \"Edit Report\" to make changes before sending it to your manager.",
   },
   {
-    icon: "📨",
+    icon: <Send size={16} />,
     title: "Submit to your manager",
     desc: "Once you're happy with the report, click \"Submit Report\". Your manager will then see it in their dashboard.",
   },
@@ -85,7 +87,7 @@ export default function HelpPage() {
                 key={i}
                 className={`flex gap-4 p-4 ${i < HOW_IT_WORKS.length - 1 ? "border-b border-[#f1f5f9] dark:border-[#1f1f1f]" : ""}`}
               >
-                <div className="w-9 h-9 rounded-full bg-[#f1f5f9] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#2a2a2a] flex items-center justify-center text-base shrink-0 mt-0.5">
+                <div className="w-9 h-9 rounded-full bg-[#f1f5f9] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#2a2a2a] flex items-center justify-center text-[#4f46e5] dark:text-[#a78bfa] shrink-0 mt-0.5">
                   {step.icon}
                 </div>
                 <div>
@@ -122,11 +124,11 @@ export default function HelpPage() {
                 href="mailto:support@voicereport.app"
                 className="flex items-center gap-3 text-sm text-[#4f46e5] dark:text-[#a78bfa] hover:underline"
               >
-                <span className="text-base">✉️</span>
+                <Mail size={15} />
                 support@voicereport.app
               </a>
               <div className="flex items-center gap-3 text-sm text-[#64748b] dark:text-[#9ca3af]">
-                <span className="text-base">⏱️</span>
+                <Clock size={15} />
                 We typically respond within 1 business day.
               </div>
             </div>

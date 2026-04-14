@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import type { ReportRecord } from "../types";
 import Navbar from "../components/Navbar";
+import { Check, FileText, Ban, Zap } from "lucide-react";
 
 type Tab = "drafts" | "submitted";
 
@@ -107,14 +108,14 @@ export default function MyReportsPage() {
                   <p className="text-[#1e293b] dark:text-[#e2e8f0] text-sm font-semibold line-clamp-2 flex-1 mr-3">{r.summary}</p>
                   <div className="flex items-center gap-1.5 shrink-0">
                     {r.submitted ? (
-                      <span className="bg-[#f0fdf4] dark:bg-[#052e16] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-[10px] font-bold px-2 py-0.5 rounded-full">✓ Submitted</span>
+                      <span className="inline-flex items-center gap-0.5 bg-[#f0fdf4] dark:bg-[#052e16] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-[10px] font-bold px-2 py-0.5 rounded-full"><Check size={9} /> Submitted</span>
                     ) : (
-                      <span className="bg-[#f8fafc] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#333] text-[#64748b] dark:text-[#9ca3af] text-[10px] font-bold px-2 py-0.5 rounded-full">📝 Draft</span>
+                      <span className="inline-flex items-center gap-0.5 bg-[#f8fafc] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#333] text-[#64748b] dark:text-[#9ca3af] text-[10px] font-bold px-2 py-0.5 rounded-full"><FileText size={9} /> Draft</span>
                     )}
                     {r.blockers.length > 0 ? (
-                      <span className="bg-[#fef2f2] dark:bg-[#200a0a] border border-[#fecaca] dark:border-[#ef4444]/40 text-[#dc2626] dark:text-[#f87171] text-[10px] font-bold px-2 py-0.5 rounded-full">🚫 BLOCKED</span>
+                      <span className="inline-flex items-center gap-0.5 bg-[#fef2f2] dark:bg-[#200a0a] border border-[#fecaca] dark:border-[#ef4444]/40 text-[#dc2626] dark:text-[#f87171] text-[10px] font-bold px-2 py-0.5 rounded-full"><Ban size={9} /> BLOCKED</span>
                     ) : (
-                      <span className="bg-[#f0fdf4] dark:bg-[#052e16] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-[10px] font-bold px-2 py-0.5 rounded-full">✓ CLEAR</span>
+                      <span className="inline-flex items-center gap-0.5 bg-[#f0fdf4] dark:bg-[#052e16] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-[10px] font-bold px-2 py-0.5 rounded-full"><Check size={9} /> CLEAR</span>
                     )}
                   </div>
                 </div>
@@ -122,9 +123,9 @@ export default function MyReportsPage() {
                   {new Date(r.timestamp).toLocaleString()}
                 </p>
                 <div className="flex gap-2">
-                  <span className="bg-[#f0fdf4] dark:bg-[#16a34a]/20 text-[#15803d] dark:text-[#4ade80] text-xs px-2 py-0.5 rounded">✓ {r.tasksCompleted.length}</span>
-                  <span className="bg-[#eff6ff] dark:bg-[#3b82f6]/20 text-[#1d4ed8] dark:text-[#60a5fa] text-xs px-2 py-0.5 rounded">⚡ {r.tasksInProgress.length}</span>
-                  <span className="bg-[#fef2f2] dark:bg-[#ef4444]/20 text-[#dc2626] dark:text-[#f87171] text-xs px-2 py-0.5 rounded">🚫 {r.blockers.length}</span>
+                  <span className="inline-flex items-center gap-1 bg-[#f0fdf4] dark:bg-[#16a34a]/20 text-[#15803d] dark:text-[#4ade80] text-xs px-2 py-0.5 rounded"><Check size={10} /> {r.tasksCompleted.length}</span>
+                  <span className="inline-flex items-center gap-1 bg-[#eff6ff] dark:bg-[#3b82f6]/20 text-[#1d4ed8] dark:text-[#60a5fa] text-xs px-2 py-0.5 rounded"><Zap size={10} /> {r.tasksInProgress.length}</span>
+                  <span className="inline-flex items-center gap-1 bg-[#fef2f2] dark:bg-[#ef4444]/20 text-[#dc2626] dark:text-[#f87171] text-xs px-2 py-0.5 rounded"><Ban size={10} /> {r.blockers.length}</span>
                 </div>
               </div>
             ))}

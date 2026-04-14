@@ -1,13 +1,16 @@
+import { Mic2, Bot, Pencil, BarChart2 } from "lucide-react";
+import type { ReactNode } from "react";
+
 interface Props {
   open: boolean;
   onClose: () => void;
 }
 
-const STEPS = [
-  { icon: "🎙", title: "Record or upload", desc: "Tap the mic to record your work update, or upload an audio file." },
-  { icon: "🤖", title: "AI transcribes", desc: "We use AI to turn your speech into text automatically." },
-  { icon: "✏️", title: "Review & edit", desc: "See your structured report. Edit anything before it's final." },
-  { icon: "📊", title: "Manager views", desc: "Your manager sees all reports in a dashboard with status and blockers." },
+const STEPS: { icon: ReactNode; title: string; desc: string }[] = [
+  { icon: <Mic2 size={18} />, title: "Record or upload", desc: "Tap the mic to record your work update, or upload an audio file." },
+  { icon: <Bot size={18} />, title: "AI transcribes", desc: "We use AI to turn your speech into text automatically." },
+  { icon: <Pencil size={18} />, title: "Review & edit", desc: "See your structured report. Edit anything before it's final." },
+  { icon: <BarChart2 size={18} />, title: "Manager views", desc: "Your manager sees all reports in a dashboard with status and blockers." },
 ];
 
 export default function HelpModal({ open, onClose }: Props) {
@@ -35,7 +38,7 @@ export default function HelpModal({ open, onClose }: Props) {
         <div className="space-y-4">
           {STEPS.map((step, i) => (
             <div key={i} className="flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#f1f5f9] dark:bg-[#161616] border border-[#e2e8f0] dark:border-[#2a2a2a] flex items-center justify-center text-lg shrink-0">
+              <div className="w-10 h-10 rounded-full bg-[#f1f5f9] dark:bg-[#161616] border border-[#e2e8f0] dark:border-[#2a2a2a] flex items-center justify-center text-[#4f46e5] dark:text-[#a78bfa] shrink-0">
                 {step.icon}
               </div>
               <div>

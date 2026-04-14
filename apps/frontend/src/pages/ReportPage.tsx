@@ -5,6 +5,7 @@ import EditableSection from "../components/EditableSection";
 import FeedbackForm from "../components/FeedbackForm";
 import Navbar from "../components/Navbar";
 import type { Report, ReportRecord } from "../types";
+import { Ban, Check, Save, Pencil, Sparkles, FileText } from "lucide-react";
 
 interface LocationState {
   id: number;
@@ -181,34 +182,34 @@ export default function ReportPage() {
           <div className="flex items-center gap-3 flex-shrink-0">
             {/* BLOCKED or CLEAR badge */}
             {report.blockers.length > 0 ? (
-              <span className="bg-[#fef2f2] dark:bg-[#160808] border border-[#fecaca] dark:border-[#ef4444]/40 text-[#dc2626] dark:text-[#f87171] text-xs font-bold px-3 py-1 rounded-full">
-                🚫 BLOCKED
+              <span className="bg-[#fef2f2] dark:bg-[#160808] border border-[#fecaca] dark:border-[#ef4444]/40 text-[#dc2626] dark:text-[#f87171] text-xs font-bold px-3 py-1 rounded-full inline-flex items-center gap-1">
+                <Ban size={11} /> BLOCKED
               </span>
             ) : (
-              <span className="bg-[#f0fdf4] dark:bg-[#0a1a0a] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-xs font-bold px-3 py-1 rounded-full">
-                ✓ CLEAR
+              <span className="bg-[#f0fdf4] dark:bg-[#0a1a0a] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-xs font-bold px-3 py-1 rounded-full inline-flex items-center gap-1">
+                <Check size={11} /> CLEAR
               </span>
             )}
             {/* Submit button or Submitted badge — shown when NOT in edit mode */}
             {!editing && (
               submitted ? (
-                <span className="bg-[#f0fdf4] dark:bg-[#0a1a0a] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-xs font-bold px-3 py-1.5 rounded-full">
-                  ✓ Submitted
+                <span className="bg-[#f0fdf4] dark:bg-[#0a1a0a] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-xs font-bold px-3 py-1.5 rounded-full inline-flex items-center gap-1">
+                  <Check size={11} /> Submitted
                 </span>
               ) : (
                 <>
                   <button
                     onClick={() => navigate("/my-reports")}
-                    className="bg-[#f1f5f9] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#333] text-[#64748b] dark:text-[#9ca3af] text-sm font-medium px-4 py-2 rounded-lg hover:opacity-80 transition-opacity"
+                    className="inline-flex items-center gap-1.5 bg-[#f1f5f9] dark:bg-[#1f1f1f] border border-[#e2e8f0] dark:border-[#333] text-[#64748b] dark:text-[#9ca3af] text-sm font-medium px-4 py-2 rounded-lg hover:opacity-80 transition-opacity"
                   >
-                    💾 Save as Draft
+                    <Save size={14} /> Save as Draft
                   </button>
                   <button
                     onClick={handleSubmitReport}
                     disabled={submitting}
                     className="bg-[#15803d] dark:bg-[#16a34a] text-white text-sm font-bold px-4 py-2 rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
                   >
-                    {submitting ? "Submitting..." : "Submit Report"}
+                    {submitting ? "Submitting…" : "Submit Report"}
                   </button>
                 </>
               )
@@ -217,9 +218,9 @@ export default function ReportPage() {
             {!editing && (
               <button
                 onClick={startEdit}
-                className="bg-[#4f46e5] dark:bg-gradient-to-r dark:from-[#8b5cf6] dark:to-[#3b82f6] text-white text-sm font-bold px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+                className="inline-flex items-center gap-1.5 bg-[#4f46e5] dark:bg-gradient-to-r dark:from-[#8b5cf6] dark:to-[#3b82f6] text-white text-sm font-bold px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
               >
-                ✏️ Edit Report
+                <Pencil size={14} /> Edit Report
               </button>
             )}
             {/* Save/Cancel when in edit mode */}
@@ -249,7 +250,7 @@ export default function ReportPage() {
           <div className="h-[2px] bg-gradient-to-r from-[#8b5cf6] to-[#3b82f6]" />
           <div className="p-4">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-[#4f46e5] dark:text-[#a78bfa] text-xs font-bold uppercase tracking-widest">✨ AI Summary</span>
+              <span className="inline-flex items-center gap-1 text-[#4f46e5] dark:text-[#a78bfa] text-xs font-bold uppercase tracking-widest"><Sparkles size={12} /> AI Summary</span>
             </div>
             {editing && draft ? (
               <textarea
@@ -301,7 +302,7 @@ export default function ReportPage() {
             className="w-full px-4 py-3 flex items-center justify-between"
           >
             <div className="flex items-center gap-2">
-              <span className="text-sm">📄</span>
+              <FileText size={14} className="text-[#64748b] dark:text-[#9ca3af]" />
               <span className="text-[#64748b] dark:text-[#9ca3af] text-sm font-medium">Raw Transcript</span>
             </div>
             <span className="text-[#94a3b8] dark:text-[#6b7280] text-sm">{showTranscript ? "Hide ▲" : "Show ▼"}</span>

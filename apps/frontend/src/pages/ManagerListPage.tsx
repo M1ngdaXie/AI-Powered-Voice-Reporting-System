@@ -4,6 +4,7 @@ import type { ReportRecord } from "../types";
 import { useAuth } from "../context/AuthContext";
 import { avatarColor, initials } from "../utils/avatar";
 import Navbar from "../components/Navbar";
+import { Ban, Check, Zap } from "lucide-react";
 
 export default function ManagerListPage() {
   const { logout } = useAuth();
@@ -71,9 +72,9 @@ export default function ManagerListPage() {
                     <div className="flex items-center justify-between gap-2 mb-0.5">
                       <span className="text-[#1e293b] dark:text-[#e2e8f0] text-sm font-semibold">{r.workerName}</span>
                       {r.blockers.length > 0 ? (
-                        <span className="flex-shrink-0 bg-[#fef2f2] dark:bg-[#200a0a] border border-[#fecaca] dark:border-[#ef4444]/40 text-[#dc2626] dark:text-[#f87171] text-[10px] font-bold px-2 py-0.5 rounded-full">🚫 BLOCKED</span>
+                        <span className="inline-flex items-center gap-0.5 shrink-0 bg-[#fef2f2] dark:bg-[#200a0a] border border-[#fecaca] dark:border-[#ef4444]/40 text-[#dc2626] dark:text-[#f87171] text-[10px] font-bold px-2 py-0.5 rounded-full"><Ban size={9} /> BLOCKED</span>
                       ) : (
-                        <span className="flex-shrink-0 bg-[#f0fdf4] dark:bg-[#052e16] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-[10px] font-bold px-2 py-0.5 rounded-full">✓ CLEAR</span>
+                        <span className="inline-flex items-center gap-0.5 shrink-0 bg-[#f0fdf4] dark:bg-[#052e16] border border-[#bbf7d0] dark:border-[#16a34a]/40 text-[#15803d] dark:text-[#4ade80] text-[10px] font-bold px-2 py-0.5 rounded-full"><Check size={9} /> CLEAR</span>
                       )}
                     </div>
                     <p className="text-[#94a3b8] dark:text-[#6b7280] text-xs">{new Date(r.timestamp).toLocaleString()}</p>
@@ -81,9 +82,9 @@ export default function ManagerListPage() {
                 </div>
                 <p className="text-[#64748b] dark:text-[#9ca3af] text-sm line-clamp-2 mb-3 ml-12">{r.summary}</p>
                 <div className="flex gap-2 ml-12">
-                  <span className="bg-[#f0fdf4] dark:bg-[#16a34a]/20 text-[#15803d] dark:text-[#4ade80] text-xs px-2 py-0.5 rounded">✓ {r.tasksCompleted.length}</span>
-                  <span className="bg-[#eff6ff] dark:bg-[#3b82f6]/20 text-[#1d4ed8] dark:text-[#60a5fa] text-xs px-2 py-0.5 rounded">⚡ {r.tasksInProgress.length}</span>
-                  <span className="bg-[#fef2f2] dark:bg-[#ef4444]/20 text-[#dc2626] dark:text-[#f87171] text-xs px-2 py-0.5 rounded">🚫 {r.blockers.length}</span>
+                  <span className="inline-flex items-center gap-1 bg-[#f0fdf4] dark:bg-[#16a34a]/20 text-[#15803d] dark:text-[#4ade80] text-xs px-2 py-0.5 rounded"><Check size={10} /> {r.tasksCompleted.length}</span>
+                  <span className="inline-flex items-center gap-1 bg-[#eff6ff] dark:bg-[#3b82f6]/20 text-[#1d4ed8] dark:text-[#60a5fa] text-xs px-2 py-0.5 rounded"><Zap size={10} /> {r.tasksInProgress.length}</span>
+                  <span className="inline-flex items-center gap-1 bg-[#fef2f2] dark:bg-[#ef4444]/20 text-[#dc2626] dark:text-[#f87171] text-xs px-2 py-0.5 rounded"><Ban size={10} /> {r.blockers.length}</span>
                 </div>
               </div>
             ))}
