@@ -173,8 +173,9 @@ The backend seeds a manager account on first start:
 | Role | Email | Password |
 |------|-------|----------|
 | Manager | admin@example.com | admin1234 |
+| Worker | test-worker@example.com | testworker1234 |
 
-Register worker accounts via the `/register` page.
+The worker account is automatically created when you run the E2E test (`bun test/test-voice.ts`). You can also register additional worker accounts via the `/register` page.
 
 ---
 
